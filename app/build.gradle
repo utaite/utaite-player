@@ -1,0 +1,48 @@
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-android-extensions"
+apply plugin: "realm-android"
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.utaite.player"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+    }
+}
+
+dependencies {
+    // Android Support
+    compile "com.android.support:appcompat-v7:$support_version"
+    compile "com.android.support:design:$support_version"
+    compile "com.android.support.constraint:constraint-layout:$constraint_version"
+
+    // Kotlin
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // Rx
+    compile "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
+    compile "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxbinding_version"
+
+    // Glide
+    compile "com.github.bumptech.glide:glide:$glide_version"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+
+    // Calligraphy
+    compile "uk.co.chrisjenx:calligraphy:$calligraphy_version"
+}

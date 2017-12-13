@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="app_name">우타이테 플레이어</string>
+
+    <string name="utaite_hiina">히이나</string>
+    <string name="utaite_kurokumo">쿠로쿠모</string>
+    <string name="utaite_nameless">네임레스</string>
+    <string name="utaite_ayaponzu">아야폰즈</string>
+    <string name="utaite_kuyuri">쿠유리</string>
+
+    <string name="title_rapunzel">라푼젤</string>
+    <string name="title_nandemonaiya">아무것도 아니야</string>
+    <string name="title_moment">모멘토</string>
+    <string name="title_shiroyuki">흰 눈</string>
+
+</resources>
