@@ -21,9 +21,8 @@ class ListFragment : BaseFragment() {
             val dataSet: MutableList<Data> = it.where(Data::class.java).equalTo(UTAITE, arguments.getInt(UTAITE)).findAll()
 
             listRecyclerView.run {
-                setHasFixedSize(true)
                 layoutManager = GridLayoutManager(activity, SPAN_COUNT)
-                adapter = ListAdapter(activity, dataSet)
+                adapter = ListAdapter(activity, this, dataSet)
             }
         }
     }

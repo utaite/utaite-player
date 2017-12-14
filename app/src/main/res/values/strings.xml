@@ -2,15 +2,97 @@
 
     <string name="app_name">우타이테 플레이어</string>
 
+
+    <string name="utaite_ayaponzu">아야폰즈</string>
     <string name="utaite_hiina">히이나</string>
     <string name="utaite_kurokumo">쿠로쿠모</string>
-    <string name="utaite_nameless">네임레스</string>
-    <string name="utaite_ayaponzu">아야폰즈</string>
     <string name="utaite_kuyuri">쿠유리</string>
+    <string name="utaite_nameless">네임레스</string>
+
+    <string name="title_aimai_elegy">사랑미혹 엘레지</string>
+    <string name="title_aira">Aira</string>
+    <string name="title_aishite">사랑해줘</string>
+    <string name="title_ai_no_scenario">사랑의 시나리오</string>
+    <string name="title_akatsuki_zukuyo">새벽달</string>
+    <string name="title_ameiro_kokoro_moyou">비색 마음의 모양</string>
+    <string name="title_aozora_no_rhapsody">푸른 하늘의 랩소디</string>
+    <string name="title_asagao_no_chiru_koro_ni">나팔꽃 질 무렵에</string>
+    <string name="title_asu_no_yozora_shoukaihan">내일의 밤하늘 초계반</string>
+    <string name="title_atafuta_ashita">허둥지둥 내일</string>
+
+    <string name="title_chopin_to_koori_no_hakken">쇼팽과 얼음의 흰 건반</string>
+
+    <string name="title_daze">daze</string>
+    <string name="title_dokusenyoku">독점욕</string>
+
+    <string name="title_fubuki">눈보라</string>
+    <string name="title_futariboshi">너와 나의 별</string>
+
+    <string name="title_gingaroku">은하록</string>
+
+    <string name="title_hate_ni_wa_hatena">끝에는 글쎄</string>
+    <string name="title_heart_no_atoaji">하트의 뒷맛</string>
+    <string name="title_heart_realize">Heart Realize</string>
+    <string name="title_hibikase">울려퍼져라</string>
+    <string name="title_hitoribocchi_to_kokoro_no_hon_to">외톨이와 마음의 책</string>
+    <string name="title_hide_and_seek">Hide and Seek</string>
+
+    <string name="title_kagerou_variation">영염≒Variation</string>
+    <string name="title_kawaiku_naritai">귀여워지고싶어</string>
+    <string name="title_kimi_no_yozora_shoukaihan">너의 밤하늘 초계반</string>
+    <string name="title_koiiro_ni_sake">사랑색으로 피어나</string>
+    <string name="title_kuusou_ressha">공주열차</string>
+    <string name="title_kumamiko_dancing">KUMAMIKO DANCING</string>
+
+    <string name="title_lets_nyance">Let\'s 냥스</string>
+
+    <string name="title_mawaru_sora_usagi">회전하는 하늘토끼</string>
+    <string name="title_mellow_birthday_eve">Mellow Birthday Eve</string>
+    <string name="title_mememememe">메메메메메</string>
+    <string name="title_mikazuki_no_yakusoku">초승달의 약속</string>
+    <string name="title_milk_crown_on_sonnetica">밀크크라운 온 소네치카</string>
+    <string name="title_moment">모멘토</string>
+    <string name="title_mousou_zei">망상세</string>
+    <string name="title_pumpkin_no_kokkei_na_yume">Pumpkin의 우스꽝스러운 꿈</string>
+    <string name="title_music_music">Music Music</string>
+
+    <string name="title_nandemonaiya">아무것도 아니야</string>
+    <string name="title_nanairo_no_asa">일곱 빛깔의 아침</string>
+    <string name="title_natsu_ni_sarishi_kimi_wo_omou">여름에 떠난 너를 생각해</string>
+    <string name="title_near">니아</string>
+    <string name="title_negaigoto">소원</string>
+
+    <string name="title_onegai_darling">부탁해 달링</string>
+
+    <string name="title_positive_dance_time">포지티브☆댄스타임</string>
+    <string name="title_puzzle_girl">퍼즐 걸</string>
+    <string name="title_pu_pe_pi_pe">푸페피페</string>
 
     <string name="title_rapunzel">라푼젤</string>
-    <string name="title_nandemonaiya">아무것도 아니야</string>
-    <string name="title_moment">모멘토</string>
-    <string name="title_shiroyuki">흰 눈</string>
+    <string name="title_renai_saiban">연애재판</string>
+    <string name="title_re_re_realize">re re Realize</string>
+
+    <string name="title_sayonara_dake_ga_jinsei_da">이별만이 인생이다</string>
+    <string name="title_sayonara_hana_dorobou_san">안녕, 꽃도둑씨</string>
+    <string name="title_sayonara_souvenir">작별 Souvenir</string>
+    <string name="title_sekai_wa_koi_ni_ochiteiru">세계는 사랑에 빠져있어</string>
+    <string name="title_shihatsu_to_kafka">첫차와 카프카</string>
+    <string name="title_shinu_ni_wa_Ii_hi_datta">죽기에는 좋은 날이었어</string>
+    <string name="title_shiro_yuki">흰 눈</string>
+    <string name="title_sing_like_a_magic">Sing=Like a Magic</string>
+    <string name="title_suki_suki_zecchou_shou">좋아좋아 절정증</string>
+    <string name="title_suji">힘줄</string>
+    <string name="title_synchronizer">Synchronizer</string>
+
+    <string name="title_teo">손을</string>
+    <string name="title_toumei_shoujo_no_susume">투명소녀의 추천</string>
+    <string name="title_tsugihagi_staccato">누덕누덕 스타카토</string>
+    <string name="title_tsuki_ni_tawagoto">달에게 농담</string>
+    <string name="title_tsumi_no_namae">죄의 이름</string>
+
+    <string name="title_ura_omote_fortune">거꾸로 도는 Fortune</string>
+
+    <string name="title_yamiyo_no_dance">암야의 댄스</string>
+    <string name="title_yoake_to_hotaru">새벽과 반딧불이</string>
 
 </resources>

@@ -10,8 +10,13 @@ import android.view.View
 import android.widget.TextView
 import com.utaite.player.R
 import com.utaite.player.app.FONT
+import com.utaite.player.data.Data
 import kotlinx.android.synthetic.main.common_action_bar.view.*
 
+
+fun MutableList<Data>.ifLastPosition(position: Int, func: () -> Unit) {
+    if (this.size - 1 == position) func()
+}
 
 fun getView(context: Context, resId: Int): View =
         LayoutInflater.from(context).inflate(resId, null)

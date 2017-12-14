@@ -14,9 +14,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.utaite.player.R
 import com.utaite.player.data.Data
-import com.utaite.player.util.getDominantColor
-import com.utaite.player.util.getOppositionColor
-import com.utaite.player.util.getView
+import com.utaite.player.util.*
 import kotlinx.android.synthetic.main.fragment_list_view.view.*
 
 
@@ -25,6 +23,7 @@ private const val IMAGE_HEIGHT_VALUE = 0.7
 
 
 class ListAdapter(private val context: Context,
+                  private val recyclerView: RecyclerView,
                   private val dataSet: MutableList<Data>) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
     private val requestManager: RequestManager by lazy { Glide.with(context) }
