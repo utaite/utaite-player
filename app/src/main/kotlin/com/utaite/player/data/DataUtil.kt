@@ -14,9 +14,7 @@ fun Realm.setDataSet(dataSet: List<Data>, isAutoIndex: Boolean = true) =
             dataSet.forEach {
                 val index = when (isAutoIndex) {
                     false -> it.index
-                    true -> where(Data::class.java).max(INDEX)?.let {
-                        it.toInt() + 1
-                    } ?: 0
+                    true -> where(Data::class.java).max(INDEX)?.toInt()?.plus(1) ?: 0
                 }
 
                 createObject(Data::class.java, index).run {

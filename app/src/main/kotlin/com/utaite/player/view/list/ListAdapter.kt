@@ -43,20 +43,20 @@ class ListAdapter(private val context: Context,
                 .load("http://tn.smilevideo.jp/smile?i=${dataSet[position].url}")
                 .into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(bitmap: Bitmap, transition: Transition<in Bitmap>) {
-                        val image = holder.itemView.listViewImage
-                        val title = holder.itemView.listViewTitle
+                        val imageView = holder.itemView.listViewImage
+                        val textView = holder.itemView.listViewTitle
 
-                        image.run {
+                        imageView.run {
                             setImageBitmap(bitmap)
 
                             post {
                                 layoutParams = layoutParams.apply {
-                                    height = (image.width / bitmap.width) * (bitmap.height * IMAGE_HEIGHT_VALUE).toInt()
+                                    height = (imageView.width / bitmap.width) * (bitmap.height * IMAGE_HEIGHT_VALUE).toInt()
                                 }
                             }
                         }
 
-                        title.run {
+                        textView.run {
                             val dominantColor = bitmap.getDominantColor()
                             setTextColor(dominantColor)
                             setBackgroundColor(dominantColor.getOppositionColor())
@@ -65,7 +65,7 @@ class ListAdapter(private val context: Context,
 
                             post {
                                 layoutParams = layoutParams.apply {
-                                    height = image.layoutParams.height / 3
+                                    height = imageView.layoutParams.height / 3
                                     setPadding(height / 5, height / 5, height / 5, height / 5)
                                 }
                             }

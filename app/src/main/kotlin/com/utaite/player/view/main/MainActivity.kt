@@ -9,6 +9,7 @@ import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
 import com.utaite.player.data.Data
 import com.utaite.player.data.HiinaData
+import com.utaite.player.data.KurokumoData
 import com.utaite.player.data.UTAITE
 import com.utaite.player.util.PreferenceUtil
 import com.utaite.player.util.setFont
@@ -31,6 +32,7 @@ class MainActivity : BaseActivity() {
         if (isInit) {
             Realm.getDefaultInstance().executeTransaction { it.delete(Data::class.java) }
             HiinaData.init()
+            KurokumoData.init()
 
             PreferenceUtil.getInstance(applicationContext).setBoolean(INIT, false)
         }
