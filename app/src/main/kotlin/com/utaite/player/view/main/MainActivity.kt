@@ -1,7 +1,7 @@
 package com.utaite.player.view.main
 
 import android.content.Context
-import android.os.Bundle
+import android.content.res.Configuration
 import android.support.design.widget.TabLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -10,10 +10,7 @@ import com.utaite.player.base.BaseActivity
 import com.utaite.player.data.Data
 import com.utaite.player.data.HiinaData
 import com.utaite.player.data.KurokumoData
-import com.utaite.player.data.UTAITE
-import com.utaite.player.util.PreferenceUtil
-import com.utaite.player.util.setFont
-import com.utaite.player.util.setTitle
+import com.utaite.player.util.*
 import com.utaite.player.view.list.ListFragment
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,6 +24,14 @@ class MainActivity : BaseActivity() {
     override val layoutId: Int = R.layout.activity_main
     override val self: Context = this@MainActivity
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        when (newConfig.orientation) {
+            android.content.res.Configuration.ORIENTATION_LANDSCAPE -> SettingUtil.RECYCLER_SPAN_COUNT = 3
+            android.content.res.Configuration.ORIENTATION_PORTRAIT -> SettingUtil.RECYCLER_SPAN_COUNT = 2
+        }
+        super.onConfigurationChanged(newConfig)
+    }
+
     override fun init() {
         val isInit: Boolean = PreferenceUtil.getInstance(applicationContext).getBoolean(INIT, true)
         if (isInit) {
@@ -35,6 +40,11 @@ class MainActivity : BaseActivity() {
             KurokumoData.init()
 
             PreferenceUtil.getInstance(applicationContext).setBoolean(INIT, false)
+        }
+
+        when (resources.configuration.orientation) {
+            android.content.res.Configuration.ORIENTATION_LANDSCAPE -> SettingUtil.RECYCLER_SPAN_COUNT = 3
+            android.content.res.Configuration.ORIENTATION_PORTRAIT -> SettingUtil.RECYCLER_SPAN_COUNT = 2
         }
 
         val dataSet: List<ListFragment> = listOf(
@@ -59,7 +69,7 @@ class MainActivity : BaseActivity() {
 
         mainViewPager.run {
             adapter = MainAdapter(supportFragmentManager, self, dataSet)
-            currentItem = TAB_MAX_VALUE / (2 * dataSet.size) * dataSet.size
+            currentItem = SettingUtil.TAB_MAX_VALUE / (2 * dataSet.size) * dataSet.size
         }
 
         val tab = mainTabLayout.getChildAt(0) as LinearLayout
@@ -72,13 +82,3 @@ class MainActivity : BaseActivity() {
     }
 
 }
-
-fun newInstance(utaite: Int): ListFragment =
-        ListFragment().apply {
-            arguments = Bundle().apply {
-                putInt(UTAITE, utaite)
-            }
-        }
-
-fun List<ListFragment>.getUtaite(position: Int): Int =
-        this[position % size].arguments.getInt(UTAITE)

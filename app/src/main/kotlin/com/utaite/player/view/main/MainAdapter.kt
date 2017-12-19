@@ -4,10 +4,10 @@ import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import com.utaite.player.util.SettingUtil
+import com.utaite.player.util.getUtaite
+import com.utaite.player.util.newInstance
 import com.utaite.player.view.list.ListFragment
-
-
-const val TAB_MAX_VALUE = 100
 
 
 class MainAdapter(fm: FragmentManager,
@@ -21,6 +21,6 @@ class MainAdapter(fm: FragmentManager,
             context.getString(dataSet.getUtaite(position))
 
     override fun getCount(): Int =
-            TAB_MAX_VALUE
+            SettingUtil.TAB_MAX_VALUE
 
 }

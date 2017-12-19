@@ -79,9 +79,9 @@ class KurokumoData {
             realm.setDataSet(dataSet)
         }
 
+        private fun newData(title: Int, url: String): Data =
+                Data(utaite = R.string.utaite_kurokumo, title = title, url = url)
+
     }
 
 }
-
-private fun newData(title: Int, url: String): Data =
-        Data(utaite = R.string.utaite_kurokumo, title = title, url = url)

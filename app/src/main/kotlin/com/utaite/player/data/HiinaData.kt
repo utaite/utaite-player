@@ -65,7 +65,7 @@ class HiinaData {
                     newData(R.string.title_synchronizer, "29433144"),
                     newData(R.string.title_nanairo_no_asa, "29790052"),
                     newData(R.string.title_nandemonaiya, "29894591"),
-                    newData(R.string.title_pumpkin_no_kokkei_na_yume, "29945736"),
+                    newData(R.string.title_mrs_pumpkin_no_kokkei_na_yume, "29945736"),
                     newData(R.string.title_heart_no_atoaji, "30318888"),
                     newData(R.string.title_mawaru_sora_usagi, "30413518"),
                     newData(R.string.title_kawaiku_naritai, "30469609"),
@@ -84,9 +84,9 @@ class HiinaData {
             realm.setDataSet(dataSet)
         }
 
+        private fun newData(title: Int, url: String): Data =
+                Data(utaite = R.string.utaite_hiina, title = title, url = url)
+
     }
 
 }
-
-private fun newData(title: Int, url: String): Data =
-        Data(utaite = R.string.utaite_hiina, title = title, url = url)
