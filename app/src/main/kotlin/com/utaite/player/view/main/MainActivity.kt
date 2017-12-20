@@ -33,6 +33,11 @@ class MainActivity : BaseActivity() {
     }
 
     override fun init() {
+        when (resources.configuration.orientation) {
+            android.content.res.Configuration.ORIENTATION_LANDSCAPE -> SettingUtil.RECYCLER_SPAN_COUNT = 3
+            android.content.res.Configuration.ORIENTATION_PORTRAIT -> SettingUtil.RECYCLER_SPAN_COUNT = 2
+        }
+
         val isInit: Boolean = PreferenceUtil.getInstance(applicationContext).getBoolean(INIT, true)
         if (isInit) {
             Realm.getDefaultInstance().executeTransaction { it.delete(Data::class.java) }
@@ -40,11 +45,6 @@ class MainActivity : BaseActivity() {
             KurokumoData.init()
 
             PreferenceUtil.getInstance(applicationContext).setBoolean(INIT, false)
-        }
-
-        when (resources.configuration.orientation) {
-            android.content.res.Configuration.ORIENTATION_LANDSCAPE -> SettingUtil.RECYCLER_SPAN_COUNT = 3
-            android.content.res.Configuration.ORIENTATION_PORTRAIT -> SettingUtil.RECYCLER_SPAN_COUNT = 2
         }
 
         val dataSet: List<ListFragment> = listOf(
