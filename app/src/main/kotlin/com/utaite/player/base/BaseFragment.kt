@@ -6,11 +6,14 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.reactivex.disposables.CompositeDisposable
 
 
 abstract class BaseFragment : Fragment() {
 
     protected abstract val layoutId: Int
+
+    protected val disposables by lazy { CompositeDisposable() }
 
     val TAG: String = javaClass.simpleName
 
@@ -21,6 +24,11 @@ abstract class BaseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) =
             init()
+
+    override fun onDestroyView() {
+        disposables.clear()
+        super.onDestroyView()
+    }
 
     abstract fun init()
 

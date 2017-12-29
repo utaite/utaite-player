@@ -1,5 +1,6 @@
 package com.utaite.player.data
 
+import com.utaite.player.R
 import io.realm.Realm
 
 
@@ -9,18 +10,45 @@ const val TITLE = "title"
 const val URL = "url"
 
 
-fun Realm.setDataSet(dataSet: List<Data>, isAutoIndex: Boolean = true) =
-        executeTransaction {
-            dataSet.forEach {
-                val index = when (isAutoIndex) {
-                    false -> it.index
-                    true -> where(Data::class.java).max(INDEX)?.toInt()?.plus(1) ?: 0
+class DataUtil {
+
+    companion object {
+
+        private fun init(addDataList: (MutableList<Data>) -> Unit) {
+            val realm = Realm.getDefaultInstance()
+            val dataSet: MutableList<Data> = mutableListOf()
+            addDataList(dataSet)
+            realm.setDataSet(dataSet)
+        }
+
+        fun initHiina(dataList: List<Data>) =
+                init { dataSet -> dataList.forEach { dataSet.add(setHiinaData(it)) } }
+
+        fun initKurokumo(dataList: List<Data>) =
+                init { dataSet -> dataList.forEach { dataSet.add(setKurokumoData(it)) } }
+
+        private fun Realm.setDataSet(dataSet: List<Data>, isAutoIndex: Boolean = true) =
+                executeTransaction {
+                    dataSet.forEach {
+                        val index = when (isAutoIndex) {
+                            false -> it.index
+                            true -> where(Data::class.java).max(INDEX)?.toInt()?.plus(1) ?: 0
+                        }
+
+                        createObject(Data::class.java, index).run {
+                            utaite = it.utaite
+                            title = it.title
+                            url = it.url
+                        }
+                    }
                 }
 
-                createObject(Data::class.java, index).run {
-                    utaite = it.utaite
-                    title = it.title
-                    url = it.url
-                }
-            }
-        }
+        private fun setHiinaData(data: Data): Data =
+                Data(utaite = R.string.utaite_hiina, title = data.title, url = data.url)
+
+        private fun setKurokumoData(data: Data): Data =
+                Data(utaite = R.string.utaite_kurokumo, title = data.title, url = data.url)
+
+    }
+
+}

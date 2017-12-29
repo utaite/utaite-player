@@ -3,6 +3,7 @@ package com.utaite.player.base
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import io.reactivex.disposables.CompositeDisposable
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
 
@@ -10,6 +11,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected abstract val layoutId: Int
     protected abstract val self: Context
+
+    protected val disposables by lazy { CompositeDisposable() }
 
     val TAG: String = javaClass.simpleName
 
@@ -21,6 +24,11 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
         init()
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 
     abstract fun init()

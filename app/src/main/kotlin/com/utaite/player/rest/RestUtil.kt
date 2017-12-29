@@ -69,7 +69,7 @@ class RestUtil {
     }
 
     interface KurokumoData {
-        @GET("Kurokumo.json")
+        @GET("KurokumoData.json")
         fun getKurokumoData(
         ): Observable<List<Data>>
     }

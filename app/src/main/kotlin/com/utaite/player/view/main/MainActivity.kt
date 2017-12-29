@@ -3,15 +3,20 @@ package com.utaite.player.view.main
 import android.content.Context
 import android.content.res.Configuration
 import android.support.design.widget.TabLayout
+import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
 import com.utaite.player.data.Data
-import com.utaite.player.data.HiinaData
-import com.utaite.player.data.KurokumoData
+import com.utaite.player.data.DataUtil
+import com.utaite.player.rest.RestUtil
 import com.utaite.player.util.*
 import com.utaite.player.view.list.ListFragment
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -39,14 +44,28 @@ class MainActivity : BaseActivity() {
         }
 
         val isInit: Boolean = PreferenceUtil.getInstance(applicationContext).getBoolean(INIT, true)
-        if (isInit) {
-            Realm.getDefaultInstance().executeTransaction { it.delete(Data::class.java) }
-            HiinaData.init()
-            KurokumoData.init()
+        when (isInit) {
+            false -> toDataLoad()
+            true -> {
+                Realm.getDefaultInstance().executeTransaction { it.delete(Data::class.java) }
 
-            PreferenceUtil.getInstance(applicationContext).setBoolean(INIT, false)
+                Observable.zip(RestUtil.getHiinaData(),
+                        RestUtil.getKurokumoData(),
+                        BiFunction { hiina: List<Data>, kurokumo: List<Data> ->
+                            DataUtil.initHiina(hiina)
+                            DataUtil.initKurokumo(kurokumo)
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ toDataLoad() }, { Log.e(TAG, it.toString()) })
+                        .apply { disposables.add(this) }
+
+                PreferenceUtil.getInstance(applicationContext).setBoolean(INIT, false)
+            }
         }
+    }
 
+    private fun toDataLoad() {
         val dataSet: List<ListFragment> = listOf(
                 newInstance(R.string.utaite_hiina),
                 newInstance(R.string.utaite_kurokumo),
