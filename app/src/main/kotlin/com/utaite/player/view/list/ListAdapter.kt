@@ -58,7 +58,7 @@ class ListAdapter(private val context: Context,
                             setTextColor(dominantColor)
                             setBackgroundColor(dominantColor.getOppositionColor())
                             background.alpha = BACKGROUND_ALPHA
-                            text = ""//context.getString(dataSet[position].title)
+                            text = context.getString(dataSet[position].title)
                             layoutParams = layoutParams.apply {
                                 height = (holder.itemView.listViewImage.layoutParams.height * TITLE_HEIGHT_VALUE).toInt()
                                 setPadding((height * TITLE_PADDING_VALUE).toInt())
