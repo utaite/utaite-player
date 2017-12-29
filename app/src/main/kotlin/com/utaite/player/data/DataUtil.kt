@@ -30,6 +30,9 @@ class DataUtil {
         fun initNameless(dataList: List<Data>) =
                 init { dataSet -> dataList.forEach { dataSet.add(setNamelessData(it)) } }
 
+        fun initYuikonnu(dataList: List<Data>) =
+                init { dataSet -> dataList.forEach { dataSet.add(setYuikonnuData(it)) } }
+
         private fun Realm.setDataSet(dataSet: List<Data>, isAutoIndex: Boolean = true) =
                 executeTransaction {
                     dataSet.forEach {
@@ -54,6 +57,9 @@ class DataUtil {
 
         private fun setNamelessData(data: Data): Data =
                 Data(utaite = R.string.utaite_nameless, title = data.title, url = data.url)
+
+        private fun setYuikonnuData(data: Data): Data =
+                Data(utaite = R.string.utaite_yuikonnu, title = data.title, url = data.url)
 
     }
 

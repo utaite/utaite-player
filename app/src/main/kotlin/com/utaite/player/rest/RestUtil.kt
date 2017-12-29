@@ -44,6 +44,11 @@ class RestUtil {
                         .create(RestUtil.NamelessData::class.java)
                         .getNamelessData()
 
+        fun getYuikonnuData(): Observable<List<Data>> =
+                RestUtil.getDataInstance()
+                        .create(RestUtil.YuikonnuData::class.java)
+                        .getYuikonnuData()
+
         private fun build(url: String): Retrofit =
                 Retrofit.Builder()
                         .baseUrl(url)
@@ -82,6 +87,12 @@ class RestUtil {
     interface NamelessData {
         @GET("NamelessData.json")
         fun getNamelessData(
+        ): Observable<List<Data>>
+    }
+
+    interface YuikonnuData {
+        @GET("YuikonnuData.json")
+        fun getYuikonnuData(
         ): Observable<List<Data>>
     }
 

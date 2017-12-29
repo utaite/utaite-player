@@ -3,10 +3,9 @@
     <string name="app_name">우타이테 플레이어</string>
 
 
-    <string name="utaite_ayaponzu">아야폰즈</string>
     <string name="utaite_hiina">히이나</string>
     <string name="utaite_kurokumo">쿠로쿠모</string>
-    <string name="utaite_kuyuri">쿠유리</string>
     <string name="utaite_nameless">네임레스</string>
+    <string name="utaite_yuikonnu">유이콘누</string>
 
 </resources>

@@ -15,7 +15,7 @@ import com.utaite.player.util.*
 import com.utaite.player.view.list.ListFragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Function3
+import io.reactivex.functions.Function4
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
@@ -45,21 +45,23 @@ class MainActivity : BaseActivity() {
 
         val isInit: Boolean = PreferenceUtil.getInstance(applicationContext).getBoolean(INIT, true)
         when (isInit) {
-            false -> toDataLoad()
+            false -> loadListFragment()
             true -> {
                 Realm.getDefaultInstance().executeTransaction { it.delete(Data::class.java) }
 
                 Observable.zip(RestUtil.getHiinaData(),
                         RestUtil.getKurokumoData(),
                         RestUtil.getNamelessData(),
-                        Function3 { hiina: List<Data>, kurokumo: List<Data>, nameless: List<Data> ->
+                        RestUtil.getYuikonnuData(),
+                        Function4 { hiina: List<Data>, kurokumo: List<Data>, nameless: List<Data>, yuikonnu: List<Data> ->
                             DataUtil.initHiina(hiina)
                             DataUtil.initKurokumo(kurokumo)
                             DataUtil.initNameless(nameless)
+                            DataUtil.initYuikonnu(yuikonnu)
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ toDataLoad() }, { Log.e(TAG, it.toString()) })
+                        .subscribe({ loadListFragment() }, { Log.e(TAG, it.toString()) })
                         .apply { disposables.add(this) }
 
                 PreferenceUtil.getInstance(applicationContext).setBoolean(INIT, false)
@@ -67,13 +69,12 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun toDataLoad() {
+    private fun loadListFragment() {
         val dataSet: List<ListFragment> = listOf(
                 newInstance(R.string.utaite_hiina),
                 newInstance(R.string.utaite_kurokumo),
                 newInstance(R.string.utaite_nameless),
-                newInstance(R.string.utaite_ayaponzu),
-                newInstance(R.string.utaite_kuyuri)
+                newInstance(R.string.utaite_yuikonnu)
         )
 
         mainTabLayout.run {
