@@ -15,7 +15,7 @@ import com.utaite.player.util.*
 import com.utaite.player.view.list.ListFragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
@@ -51,9 +51,11 @@ class MainActivity : BaseActivity() {
 
                 Observable.zip(RestUtil.getHiinaData(),
                         RestUtil.getKurokumoData(),
-                        BiFunction { hiina: List<Data>, kurokumo: List<Data> ->
+                        RestUtil.getNamelessData(),
+                        Function3 { hiina: List<Data>, kurokumo: List<Data>, nameless: List<Data> ->
                             DataUtil.initHiina(hiina)
                             DataUtil.initKurokumo(kurokumo)
+                            DataUtil.initNameless(nameless)
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

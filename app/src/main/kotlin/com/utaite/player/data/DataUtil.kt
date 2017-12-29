@@ -27,6 +27,9 @@ class DataUtil {
         fun initKurokumo(dataList: List<Data>) =
                 init { dataSet -> dataList.forEach { dataSet.add(setKurokumoData(it)) } }
 
+        fun initNameless(dataList: List<Data>) =
+                init { dataSet -> dataList.forEach { dataSet.add(setNamelessData(it)) } }
+
         private fun Realm.setDataSet(dataSet: List<Data>, isAutoIndex: Boolean = true) =
                 executeTransaction {
                     dataSet.forEach {
@@ -48,6 +51,9 @@ class DataUtil {
 
         private fun setKurokumoData(data: Data): Data =
                 Data(utaite = R.string.utaite_kurokumo, title = data.title, url = data.url)
+
+        private fun setNamelessData(data: Data): Data =
+                Data(utaite = R.string.utaite_nameless, title = data.title, url = data.url)
 
     }
 

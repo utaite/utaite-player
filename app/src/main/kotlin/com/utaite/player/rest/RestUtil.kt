@@ -39,6 +39,11 @@ class RestUtil {
                         .create(RestUtil.KurokumoData::class.java)
                         .getKurokumoData()
 
+        fun getNamelessData(): Observable<List<Data>> =
+                RestUtil.getDataInstance()
+                        .create(RestUtil.NamelessData::class.java)
+                        .getNamelessData()
+
         private fun build(url: String): Retrofit =
                 Retrofit.Builder()
                         .baseUrl(url)
@@ -71,6 +76,12 @@ class RestUtil {
     interface KurokumoData {
         @GET("KurokumoData.json")
         fun getKurokumoData(
+        ): Observable<List<Data>>
+    }
+
+    interface NamelessData {
+        @GET("NamelessData.json")
+        fun getNamelessData(
         ): Observable<List<Data>>
     }
 
