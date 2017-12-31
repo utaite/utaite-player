@@ -12,6 +12,7 @@ import io.reactivex.disposables.CompositeDisposable
 abstract class BaseFragment : Fragment() {
 
     protected abstract val layoutId: Int
+    protected abstract val self: Fragment
 
     protected val disposables by lazy { CompositeDisposable() }
 

@@ -11,7 +11,6 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         Realm.init(this)
 
         val calligraphyConfig = CalligraphyConfig.Builder()

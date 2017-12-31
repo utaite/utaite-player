@@ -20,15 +20,18 @@ fun TextView.setFont(context: Context) {
     typeface = Typeface.createFromAsset(context.assets, SettingUtil.FONT)
 }
 
-fun ActionBar.setTitle(context: Context, title: Int) {
+fun ActionBar.setTitle(context: Context, title: Int) =
+        setTitle(context, context.getString(title))
+
+fun ActionBar.setTitle(context: Context, title: String) {
     customView = getView(context, R.layout.common_action_bar).apply {
-        actionBarTitle.text = context.getString(title)
+        actionBarTitle.text = title
         actionBarTitle.setFont(context)
     }
     displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
 }
 
-fun newInstance(utaite: Int): ListFragment =
+fun newListInstance(utaite: Int): ListFragment =
         ListFragment().apply {
             arguments = Bundle().apply {
                 putInt(UTAITE, utaite)

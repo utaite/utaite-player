@@ -15,6 +15,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.utaite.player.R
 import com.utaite.player.data.Data
+import com.utaite.player.util.OnItemClickListener
 import com.utaite.player.util.SettingUtil
 import com.utaite.player.util.getView
 import kotlinx.android.synthetic.main.fragment_list_view.view.*
@@ -27,13 +28,15 @@ private const val TITLE_PADDING_VALUE = 0.2
 
 
 class ListAdapter(private val context: Context,
-                  private val dataSet: MutableList<Data>) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+                  private val dataSet: MutableList<Data>,
+                  private val listener: OnItemClickListener<Data>) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
     private val requestManager: RequestManager by lazy { Glide.with(context) }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(getView(parent.context, R.layout.fragment_list_view)).apply {
-
+                itemView.listViewImage.setOnClickListener { listener.onItemClick(adapterPosition, dataSet[adapterPosition]) }
+                itemView.listViewTitle.setOnClickListener { listener.onItemClick(adapterPosition, dataSet[adapterPosition]) }
             }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

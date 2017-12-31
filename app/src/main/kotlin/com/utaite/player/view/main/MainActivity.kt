@@ -1,6 +1,5 @@
 package com.utaite.player.view.main
 
-import android.content.Context
 import android.content.res.Configuration
 import android.support.design.widget.TabLayout
 import android.util.Log
@@ -27,7 +26,7 @@ private const val INIT = "INIT"
 class MainActivity : BaseActivity() {
 
     override val layoutId: Int = R.layout.activity_main
-    override val self: Context = this@MainActivity
+    override val self = this@MainActivity
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         when (newConfig.orientation) {
@@ -71,10 +70,10 @@ class MainActivity : BaseActivity() {
 
     private fun loadListFragment() {
         val dataSet: List<ListFragment> = listOf(
-                newInstance(R.string.utaite_hiina),
-                newInstance(R.string.utaite_kurokumo),
-                newInstance(R.string.utaite_nameless),
-                newInstance(R.string.utaite_yuikonnu)
+                newListInstance(R.string.utaite_hiina),
+                newListInstance(R.string.utaite_kurokumo),
+                newListInstance(R.string.utaite_nameless),
+                newListInstance(R.string.utaite_yuikonnu)
         )
 
         mainTabLayout.run {
