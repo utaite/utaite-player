@@ -3,6 +3,7 @@ package com.utaite.player.base
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.utaite.player.util.getView
 import io.reactivex.disposables.CompositeDisposable
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
@@ -20,7 +21,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(layoutId)
+        setContentView(getView(self, layoutId))
         init()
     }
 

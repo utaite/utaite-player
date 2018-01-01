@@ -16,9 +16,6 @@ import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 
-const val NETWORK_ERROR = "NETWORK_ERROR"
-
-
 class RestUtil {
 
     companion object {

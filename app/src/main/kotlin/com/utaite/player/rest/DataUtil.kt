@@ -20,32 +20,19 @@ class DataUtil {
 
     companion object {
 
-        private fun BaseActivity.init(dataSet: List<Data>) {
-            Realm.getDefaultInstance().executeTransaction { it.setDataSet(dataSet) }
-            Observable.fromIterable(dataSet)
-                    .flatMap { RestUtil.getInfo(it.url) }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ info ->
-                        Realm.getDefaultInstance().executeTransaction {
-                            val url: String = info.thumb.watchUrl.run { substring(indexOf("sm") + 2) }
-                            val data: Data? = it.where(Data::class.java).equalTo(URL, url).findFirst()
-                            data?.count = info.thumb.viewCounter.toInt()
-                        }
-                    }, { Log.e(NETWORK_ERROR, it.toString()) })
-                    .apply { disposables.add(this) }
-        }
+        private fun init(dataSet: List<Data>) =
+                Realm.getDefaultInstance().executeTransaction { it.setDataSet(dataSet) }
 
-        fun BaseActivity.initHiina(dataSet: List<Data>) =
+        fun initHiina(dataSet: List<Data>) =
                 init(dataSet.map { it.apply { utaite = R.string.utaite_hiina } })
 
-        fun BaseActivity.initKurokumo(dataSet: List<Data>) =
+        fun initKurokumo(dataSet: List<Data>) =
                 init(dataSet.map { it.apply { utaite = R.string.utaite_kurokumo } })
 
-        fun BaseActivity.initNameless(dataSet: List<Data>) =
+        fun initNameless(dataSet: List<Data>) =
                 init(dataSet.map { it.apply { utaite = R.string.utaite_nameless } })
 
-        fun BaseActivity.initYuikonnu(dataSet: List<Data>) =
+        fun initYuikonnu(dataSet: List<Data>) =
                 init(dataSet.map { it.apply { utaite = R.string.utaite_yuikonnu } })
 
         private fun Realm.setDataSet(dataSet: List<Data>, isAutoIndex: Boolean = true) =
@@ -59,7 +46,6 @@ class DataUtil {
                         utaite = it.utaite
                         title = it.title
                         url = it.url
-                        count = it.count
                     }
                 }
 

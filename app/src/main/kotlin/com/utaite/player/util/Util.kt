@@ -13,6 +13,10 @@ import com.utaite.player.view.list.ListFragment
 import kotlinx.android.synthetic.main.common_action_bar.view.*
 
 
+const val ERROR = "ERROR"
+const val NETWORK_ERROR = "NETWORK_ERROR"
+
+
 fun getView(context: Context, resId: Int): View =
         LayoutInflater.from(context).inflate(resId, null)
 
