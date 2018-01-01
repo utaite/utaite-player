@@ -8,4 +8,9 @@
     <string name="utaite_nameless">네임레스</string>
     <string name="utaite_yuikonnu">유이콘누</string>
 
+    <string name="list_sorted_alert_title">노래 정렬방식</string>
+    <string name="list_sorted_newest_upload">최근 업로드순</string>
+    <string name="list_sorted_title">제목순</string>
+    <string name="list_sorted_most_view">조회순</string>
+
 </resources>

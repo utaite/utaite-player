@@ -2,9 +2,9 @@ package com.utaite.player.view.detail
 
 import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
-import com.utaite.player.data.TITLE
-import com.utaite.player.data.URL
-import com.utaite.player.data.UTAITE
+import com.utaite.player.rest.TITLE
+import com.utaite.player.rest.URL
+import com.utaite.player.rest.UTAITE
 import com.utaite.player.util.setTitle
 import kotlinx.android.synthetic.main.activity_detail.*
 

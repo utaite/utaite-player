@@ -6,6 +6,10 @@ import android.support.v7.app.AppCompatActivity
 import com.utaite.player.BuildConfig
 
 
+const val INIT = "INIT"
+const val SORTED = "SORTED"
+
+
 class PreferenceUtil private constructor(context: Context) {
 
     companion object {

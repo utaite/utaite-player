@@ -1,4 +1,4 @@
-package com.utaite.player.data
+package com.utaite.player.rest
 
 import com.utaite.player.R
 import io.realm.Realm
@@ -8,6 +8,7 @@ const val INDEX = "index"
 const val UTAITE = "utaite"
 const val TITLE = "title"
 const val URL = "url"
+const val COUNT = "count"
 
 
 class DataUtil {
@@ -40,11 +41,13 @@ class DataUtil {
                             false -> it.index
                             true -> where(Data::class.java).max(INDEX)?.toInt()?.plus(1) ?: 0
                         }
+                        it.count = 0
 
                         createObject(Data::class.java, index).run {
                             utaite = it.utaite
                             title = it.title
                             url = it.url
+                            count = it.count
                         }
                     }
                 }

@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.utaite.player.R
-import com.utaite.player.data.UTAITE
+import com.utaite.player.rest.UTAITE
 import com.utaite.player.view.list.ListFragment
 import kotlinx.android.synthetic.main.common_action_bar.view.*
 

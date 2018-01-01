@@ -14,7 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.utaite.player.R
-import com.utaite.player.data.Data
+import com.utaite.player.rest.Data
 import com.utaite.player.util.OnItemClickListener
 import com.utaite.player.util.SettingUtil
 import com.utaite.player.util.getView

@@ -2,13 +2,16 @@ package com.utaite.player.view.main
 
 import android.content.res.Configuration
 import android.support.design.widget.TabLayout
+import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
-import com.utaite.player.data.Data
-import com.utaite.player.data.DataUtil
+import com.utaite.player.rest.Data
+import com.utaite.player.rest.DataUtil
 import com.utaite.player.rest.RestUtil
 import com.utaite.player.util.*
 import com.utaite.player.view.list.ListFragment
@@ -18,9 +21,6 @@ import io.reactivex.functions.Function4
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
-
-
-private const val INIT = "INIT"
 
 
 class MainActivity : BaseActivity() {
@@ -36,6 +36,34 @@ class MainActivity : BaseActivity() {
         super.onConfigurationChanged(newConfig)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+            when (item.itemId) {
+                R.id.mainMenuSorted -> {
+                    val sortedIndex: Int = PreferenceUtil.getInstance(applicationContext).getInt(SORTED, 0)
+                    val sortedList: Array<String> = arrayOf(
+                            getString(R.string.list_sorted_newest_upload),
+                            getString(R.string.list_sorted_title),
+                            getString(R.string.list_sorted_most_view)
+                    )
+                    AlertDialog.Builder(self).run {
+                        setTitle(getString(R.string.list_sorted_alert_title))
+                        setSingleChoiceItems(sortedList, sortedIndex, { dialog, which ->
+                            PreferenceUtil.getInstance(applicationContext).setInt(SORTED, which)
+                            dialog.dismiss()
+                            loadViewPager(currentPosition = mainViewPager.currentItem)
+                        })
+                        show()
+                    }
+                    true
+                }
+                else -> false
+            }
+
     override fun init() {
         when (resources.configuration.orientation) {
             android.content.res.Configuration.ORIENTATION_LANDSCAPE -> SettingUtil.RECYCLER_SPAN_COUNT = 3
@@ -44,7 +72,7 @@ class MainActivity : BaseActivity() {
 
         val isInit: Boolean = PreferenceUtil.getInstance(applicationContext).getBoolean(INIT, true)
         when (isInit) {
-            false -> loadListFragment()
+            false -> loadTabLayout()
             true -> {
                 Realm.getDefaultInstance().executeTransaction { it.delete(Data::class.java) }
 
@@ -60,7 +88,7 @@ class MainActivity : BaseActivity() {
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ loadListFragment() }, { Log.e(TAG, it.toString()) })
+                        .subscribe({ loadTabLayout() }, { Log.e(TAG, it.toString()) })
                         .apply { disposables.add(this) }
 
                 PreferenceUtil.getInstance(applicationContext).setBoolean(INIT, false)
@@ -68,14 +96,8 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun loadListFragment() {
-        val dataSet: List<ListFragment> = listOf(
-                newListInstance(R.string.utaite_hiina),
-                newListInstance(R.string.utaite_kurokumo),
-                newListInstance(R.string.utaite_nameless),
-                newListInstance(R.string.utaite_yuikonnu)
-        )
-
+    private fun loadTabLayout() {
+        val dataSet: List<ListFragment> = getDataSet()
         mainTabLayout.run {
             setupWithViewPager(mainViewPager)
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -88,9 +110,18 @@ class MainActivity : BaseActivity() {
             })
         }
 
+        loadViewPager()
+    }
+
+    private fun loadViewPager(currentPosition: Int = 0) {
+        val dataSet: List<ListFragment> = getDataSet()
+        val random: Int = (Math.random() * dataSet.size).toInt()
         mainViewPager.run {
             adapter = MainAdapter(supportFragmentManager, self, dataSet)
-            currentItem = SettingUtil.TAB_MAX_VALUE / (2 * dataSet.size) * dataSet.size
+            currentItem = when (currentPosition == 0) {
+                false -> currentPosition
+                true -> SettingUtil.TAB_MAX_VALUE / (2 * dataSet.size) * dataSet.size + random
+            }
         }
 
         val tab = mainTabLayout.getChildAt(0) as LinearLayout
@@ -101,5 +132,13 @@ class MainActivity : BaseActivity() {
                 .map { it.getChildAt(1) as TextView }
                 .forEach { it.setFont(self) }
     }
+
+    private fun getDataSet(): List<ListFragment> =
+            listOf(
+                    newListInstance(R.string.utaite_hiina),
+                    newListInstance(R.string.utaite_kurokumo),
+                    newListInstance(R.string.utaite_nameless),
+                    newListInstance(R.string.utaite_yuikonnu)
+            )
 
 }
