@@ -12,6 +12,7 @@ import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
 import com.utaite.player.rest.Data
 import com.utaite.player.rest.DataUtil
+import com.utaite.player.rest.NETWORK_ERROR
 import com.utaite.player.rest.RestUtil
 import com.utaite.player.util.*
 import com.utaite.player.view.list.ListFragment
@@ -41,28 +42,30 @@ class MainActivity : BaseActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean =
-            when (item.itemId) {
-                R.id.mainMenuSorted -> {
-                    val sortedIndex: Int = PreferenceUtil.getInstance(applicationContext).getInt(SORTED, 0)
-                    val sortedList: Array<String> = arrayOf(
-                            getString(R.string.list_sorted_newest_upload),
-                            getString(R.string.list_sorted_title),
-                            getString(R.string.list_sorted_most_view)
-                    )
-                    AlertDialog.Builder(self).run {
-                        setTitle(getString(R.string.list_sorted_alert_title))
-                        setSingleChoiceItems(sortedList, sortedIndex, { dialog, which ->
-                            PreferenceUtil.getInstance(applicationContext).setInt(SORTED, which)
-                            dialog.dismiss()
-                            loadViewPager(currentPosition = mainViewPager.currentItem)
-                        })
-                        show()
-                    }
-                    true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val isInit: Boolean = PreferenceUtil.getInstance(applicationContext).getBoolean(INIT, true)
+        if (!isInit) {
+            if (item.itemId == R.id.mainMenuSorted) {
+                val sortedIndex: Int = PreferenceUtil.getInstance(applicationContext).getInt(SORTED, 0)
+                val sortedList: Array<String> = arrayOf(
+                        getString(R.string.list_sorted_title),
+                        getString(R.string.list_sorted_most_view),
+                        getString(R.string.list_sorted_newest_upload)
+                )
+                AlertDialog.Builder(self).run {
+                    setTitle(getString(R.string.list_sorted_alert_title))
+                    setSingleChoiceItems(sortedList, sortedIndex, { dialog, which ->
+                        PreferenceUtil.getInstance(applicationContext).setInt(SORTED, which)
+                        dialog.dismiss()
+                        loadViewPager(currentPosition = mainViewPager.currentItem)
+                    })
+                    show()
                 }
-                else -> false
+                return true
             }
+        }
+        return false
+    }
 
     override fun init() {
         when (resources.configuration.orientation) {
@@ -80,15 +83,17 @@ class MainActivity : BaseActivity() {
                         RestUtil.getKurokumoData(),
                         RestUtil.getNamelessData(),
                         RestUtil.getYuikonnuData(),
-                        Function4 { hiina: List<Data>, kurokumo: List<Data>, nameless: List<Data>, yuikonnu: List<Data> ->
-                            DataUtil.initHiina(hiina)
-                            DataUtil.initKurokumo(kurokumo)
-                            DataUtil.initNameless(nameless)
-                            DataUtil.initYuikonnu(yuikonnu)
+                        Function4 { hiina: List<Data>, kurokumo: List<Data>, nameless: List<Data>, yuikonnu: List<Data>  ->
+                            DataUtil.run {
+                                initHiina(hiina)
+                                initKurokumo(kurokumo)
+                                initNameless(nameless)
+                                initYuikonnu(yuikonnu)
+                            }
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ loadTabLayout() }, { Log.e(TAG, it.toString()) })
+                        .subscribe({ loadTabLayout() }, { Log.e(NETWORK_ERROR, it.toString()) })
                         .apply { disposables.add(this) }
 
                 PreferenceUtil.getInstance(applicationContext).setBoolean(INIT, false)

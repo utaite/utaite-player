@@ -14,9 +14,7 @@ abstract class BaseFragment : Fragment() {
     protected abstract val layoutId: Int
     protected abstract val self: Fragment
 
-    protected val disposables by lazy { CompositeDisposable() }
-
-    val TAG: String = javaClass.simpleName
+    val disposables by lazy { CompositeDisposable() }
 
     val activity: AppCompatActivity by lazy { (getActivity() as AppCompatActivity) }
 

@@ -12,9 +12,7 @@ abstract class BaseActivity : AppCompatActivity() {
     protected abstract val layoutId: Int
     protected abstract val self: Context
 
-    protected val disposables by lazy { CompositeDisposable() }
-
-    val TAG: String = javaClass.simpleName
+    val disposables by lazy { CompositeDisposable() }
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(base))

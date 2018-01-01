@@ -4,6 +4,7 @@ import com.utaite.player.BuildConfig
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -15,6 +16,9 @@ import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 
+const val NETWORK_ERROR = "NETWORK_ERROR"
+
+
 class RestUtil {
 
     companion object {
@@ -23,13 +27,13 @@ class RestUtil {
         private var data: Retrofit? = null
 
         private fun getInfoInstance(): Retrofit {
-            if (data == null) {
+            if (info == null) {
                 synchronized(this) {
-                    data = build(SimpleXmlConverterFactory.create(), "http://ext.nicovideo.jp/api/getthumbinfo/")
+                    info = build(SimpleXmlConverterFactory.create(), "http://ext.nicovideo.jp/api/getthumbinfo/")
                 }
             }
 
-            return data as Retrofit
+            return info as Retrofit
         }
 
         private fun getDataInstance(): Retrofit {
@@ -41,6 +45,11 @@ class RestUtil {
 
             return data as Retrofit
         }
+
+        fun getInfo(url: String): Observable<Info> =
+                RestUtil.getInfoInstance()
+                        .create(RestUtil.GetInfo::class.java)
+                        .getInfo(url)
 
         fun getHiinaData(): Observable<List<Data>> =
                 RestUtil.getDataInstance()
@@ -88,10 +97,10 @@ class RestUtil {
 
     }
 
-    interface getInfo {
+    interface GetInfo {
         @GET("sm{url}")
         fun getInfo(@Path("url") url: String
-        ): Observable<Data>
+        ): Observable<Info>
     }
 
     interface HiinaData {

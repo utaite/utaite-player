@@ -1,6 +1,11 @@
 package com.utaite.player.rest
 
+import android.util.Log
 import com.utaite.player.R
+import com.utaite.player.base.BaseActivity
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 
 
@@ -15,54 +20,48 @@ class DataUtil {
 
     companion object {
 
-        private fun init(addDataList: (MutableList<Data>) -> Unit) {
-            val realm = Realm.getDefaultInstance()
-            val dataSet: MutableList<Data> = mutableListOf()
-            addDataList(dataSet)
-            realm.setDataSet(dataSet)
+        private fun BaseActivity.init(dataSet: List<Data>) {
+            Realm.getDefaultInstance().executeTransaction { it.setDataSet(dataSet) }
+            Observable.fromIterable(dataSet)
+                    .flatMap { RestUtil.getInfo(it.url) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ info ->
+                        Realm.getDefaultInstance().executeTransaction {
+                            val url: String = info.thumb.watchUrl.run { substring(indexOf("sm") + 2) }
+                            val data: Data? = it.where(Data::class.java).equalTo(URL, url).findFirst()
+                            data?.count = info.thumb.viewCounter.toInt()
+                        }
+                    }, { Log.e(NETWORK_ERROR, it.toString()) })
+                    .apply { disposables.add(this) }
         }
 
-        fun initHiina(dataList: List<Data>) =
-                init { dataSet -> dataList.forEach { dataSet.add(setHiinaData(it)) } }
+        fun BaseActivity.initHiina(dataSet: List<Data>) =
+                init(dataSet.map { it.apply { utaite = R.string.utaite_hiina } })
 
-        fun initKurokumo(dataList: List<Data>) =
-                init { dataSet -> dataList.forEach { dataSet.add(setKurokumoData(it)) } }
+        fun BaseActivity.initKurokumo(dataSet: List<Data>) =
+                init(dataSet.map { it.apply { utaite = R.string.utaite_kurokumo } })
 
-        fun initNameless(dataList: List<Data>) =
-                init { dataSet -> dataList.forEach { dataSet.add(setNamelessData(it)) } }
+        fun BaseActivity.initNameless(dataSet: List<Data>) =
+                init(dataSet.map { it.apply { utaite = R.string.utaite_nameless } })
 
-        fun initYuikonnu(dataList: List<Data>) =
-                init { dataSet -> dataList.forEach { dataSet.add(setYuikonnuData(it)) } }
+        fun BaseActivity.initYuikonnu(dataSet: List<Data>) =
+                init(dataSet.map { it.apply { utaite = R.string.utaite_yuikonnu } })
 
         private fun Realm.setDataSet(dataSet: List<Data>, isAutoIndex: Boolean = true) =
-                executeTransaction {
-                    dataSet.forEach {
-                        val index = when (isAutoIndex) {
-                            false -> it.index
-                            true -> where(Data::class.java).max(INDEX)?.toInt()?.plus(1) ?: 0
-                        }
-                        it.count = 0
+                dataSet.forEach {
+                    val index = when (isAutoIndex) {
+                        false -> it.index
+                        true -> where(Data::class.java).max(INDEX)?.toInt()?.plus(1) ?: 0
+                    }
 
-                        createObject(Data::class.java, index).run {
-                            utaite = it.utaite
-                            title = it.title
-                            url = it.url
-                            count = it.count
-                        }
+                    createObject(Data::class.java, index).run {
+                        utaite = it.utaite
+                        title = it.title
+                        url = it.url
+                        count = it.count
                     }
                 }
-
-        private fun setHiinaData(data: Data): Data =
-                Data(utaite = R.string.utaite_hiina, title = data.title, url = data.url)
-
-        private fun setKurokumoData(data: Data): Data =
-                Data(utaite = R.string.utaite_kurokumo, title = data.title, url = data.url)
-
-        private fun setNamelessData(data: Data): Data =
-                Data(utaite = R.string.utaite_nameless, title = data.title, url = data.url)
-
-        private fun setYuikonnuData(data: Data): Data =
-                Data(utaite = R.string.utaite_yuikonnu, title = data.title, url = data.url)
 
     }
 
