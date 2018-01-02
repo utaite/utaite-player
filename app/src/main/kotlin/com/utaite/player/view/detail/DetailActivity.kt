@@ -12,10 +12,7 @@ import android.webkit.WebViewClient
 import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
 import com.utaite.player.rest.*
-import com.utaite.player.util.ERROR
-import com.utaite.player.util.IS_LYRICS
-import com.utaite.player.util.PreferenceUtil
-import com.utaite.player.util.setTitle
+import com.utaite.player.util.*
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.activity_detail.*
 
@@ -51,7 +48,7 @@ class DetailActivity : BaseActivity() {
                 }
                 android.content.res.Configuration.ORIENTATION_PORTRAIT -> {
                     val pair = when (it) {
-                        false -> View.VISIBLE to android.R.drawable.ic_menu_close_clear_cancel
+                        false -> View.VISIBLE to android.R.drawable.ic_menu_revert
                         true -> View.GONE to android.R.drawable.ic_menu_more
                     }
                     detailLyrics.visibility = pair.first
@@ -96,6 +93,11 @@ class DetailActivity : BaseActivity() {
                 }
 
                 override fun onPageFinished(view: WebView?, url: String?) {
+                    RestUtil.getLyrics(intent.getStringExtra(TITLE))
+                            .subscribe({
+                                detailLyrics.text = it.string()
+                            }, { Log.e(NETWORK_ERROR, it.toString()) })
+
                     detailProgressBar.visibility = View.GONE
                     detailWebView.visibility = View.VISIBLE
 

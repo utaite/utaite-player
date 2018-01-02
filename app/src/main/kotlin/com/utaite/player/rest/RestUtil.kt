@@ -4,6 +4,7 @@ import com.utaite.player.BuildConfig
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -20,7 +21,7 @@ class RestUtil {
     companion object {
 
         private var info: Retrofit? = null
-        private var data: Retrofit? = null
+        private var resource: Retrofit? = null
 
         private fun getInfoInstance(): Retrofit {
             if (info == null) {
@@ -32,58 +33,63 @@ class RestUtil {
             return info as Retrofit
         }
 
-        private fun getDataInstance(): Retrofit {
-            if (data == null) {
+        private fun getResourceInstance(): Retrofit {
+            if (resource == null) {
                 synchronized(this) {
-                    data = build("https://raw.githubusercontent.com/utaite/utaite-player/master/data/")
+                    resource = build("https://raw.githubusercontent.com/utaite/utaite-player/master/")
                 }
             }
 
-            return data as Retrofit
+            return resource as Retrofit
         }
 
-        fun getInfo(url: String): Observable<Info> =
+        fun getInfo(watch: String): Observable<Info> =
                 RestUtil.getInfoInstance()
                         .create(RestUtil.GetInfo::class.java)
-                        .getInfo(url)
+                        .getInfo(watch)
+
+        fun getLyrics(title: String): Observable<ResponseBody> =
+                RestUtil.getInfoInstance()
+                        .create(RestUtil.GetLyrics::class.java)
+                        .getLyrics(title)
 
         fun getAyaponzuData(): Observable<List<Data>> =
-                RestUtil.getDataInstance()
+                RestUtil.getResourceInstance()
                         .create(RestUtil.AyaponzuData::class.java)
                         .getAyaponzuData()
 
         fun getHiinaData(): Observable<List<Data>> =
-                RestUtil.getDataInstance()
+                RestUtil.getResourceInstance()
                         .create(RestUtil.HiinaData::class.java)
                         .getHiinaData()
 
         fun getKurokumoData(): Observable<List<Data>> =
-                RestUtil.getDataInstance()
+                RestUtil.getResourceInstance()
                         .create(RestUtil.KurokumoData::class.java)
                         .getKurokumoData()
 
         fun getLaiLaiData(): Observable<List<Data>> =
-                RestUtil.getDataInstance()
+                RestUtil.getResourceInstance()
                         .create(RestUtil.LaiLaiData::class.java)
                         .getLaiLaiData()
 
         fun getNamelessData(): Observable<List<Data>> =
-                RestUtil.getDataInstance()
+                RestUtil.getResourceInstance()
                         .create(RestUtil.NamelessData::class.java)
                         .getNamelessData()
 
         fun getRibonnuData(): Observable<List<Data>> =
-                RestUtil.getDataInstance()
+                RestUtil.getResourceInstance()
                         .create(RestUtil.RibonnuData::class.java)
                         .getRibonnuData()
 
         fun getWotaminData(): Observable<List<Data>> =
-                RestUtil.getDataInstance()
+                RestUtil.getResourceInstance()
                         .create(RestUtil.WotaminData::class.java)
                         .getWotaminData()
 
         fun getYuikonnuData(): Observable<List<Data>> =
-                RestUtil.getDataInstance()
+                RestUtil.getResourceInstance()
                         .create(RestUtil.YuikonnuData::class.java)
                         .getYuikonnuData()
 
@@ -115,54 +121,60 @@ class RestUtil {
 
     interface GetInfo {
         @GET("sm{watch}")
-        fun getInfo(@Path("watch") url: String
+        fun getInfo(@Path("watch") watch: String
         ): Observable<Info>
     }
 
+    interface GetLyrics {
+        @GET("lyrics/{title}.txt")
+        fun getLyrics(@Path("title") title: String
+        ): Observable<ResponseBody>
+    }
+
     interface AyaponzuData {
-        @GET("AyaponzuData.json")
+        @GET("data/AyaponzuData.json")
         fun getAyaponzuData(
         ): Observable<List<Data>>
     }
 
     interface HiinaData {
-        @GET("HiinaData.json")
+        @GET("data/HiinaData.json")
         fun getHiinaData(
         ): Observable<List<Data>>
     }
 
     interface KurokumoData {
-        @GET("KurokumoData.json")
+        @GET("data/KurokumoData.json")
         fun getKurokumoData(
         ): Observable<List<Data>>
     }
 
     interface LaiLaiData {
-        @GET("LaiLaiData.json")
+        @GET("data/LaiLaiData.json")
         fun getLaiLaiData(
         ): Observable<List<Data>>
     }
 
     interface NamelessData {
-        @GET("NamelessData.json")
+        @GET("data/NamelessData.json")
         fun getNamelessData(
         ): Observable<List<Data>>
     }
 
     interface RibonnuData {
-        @GET("RibonnuData.json")
+        @GET("data/RibonnuData.json")
         fun getRibonnuData(
         ): Observable<List<Data>>
     }
 
     interface WotaminData {
-        @GET("WotaminData.json")
+        @GET("data/WotaminData.json")
         fun getWotaminData(
         ): Observable<List<Data>>
     }
 
     interface YuikonnuData {
-        @GET("YuikonnuData.json")
+        @GET("data/YuikonnuData.json")
         fun getYuikonnuData(
         ): Observable<List<Data>>
     }
