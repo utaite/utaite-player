@@ -4,14 +4,14 @@
 
     <string name="onBackPressed">뒤로가기 버튼을 한번 더 누르시면 종료됩니다.</string>
 
-    <string name="utaite_ayaponzu">아야폰즈</string>
-    <string name="utaite_hiina">히이나</string>
-    <string name="utaite_kurokumo">쿠로쿠모</string>
-    <string name="utaite_lailai">라이라이</string>
     <string name="utaite_nameless">네임리스</string>
+    <string name="utaite_lailai">라이라이</string>
     <string name="utaite_ribonnu">리본누</string>
+    <string name="utaite_ayaponzu">아야폰즈</string>
     <string name="utaite_wotamin">오타밍</string>
     <string name="utaite_yuikonnu">유이콘누</string>
+    <string name="utaite_hiina">히이나</string>
+    <string name="utaite_kurokumo">쿠로쿠모</string>
 
     <string name="list_sorted_alert_title">노래 정렬방식</string>
     <string name="list_sorted_newest_upload">최근 업로드순</string>

@@ -46,7 +46,7 @@ class ListAdapter(private val context: Context,
         requestManager
                 .asBitmap()
                 .apply(requestOptions)
-                .load("http://tn.smilevideo.jp/smile?i=${dataSet[position].url}")
+                .load("http://tn.smilevideo.jp/smile?i=${dataSet[position].watch}")
                 .into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(bitmap: Bitmap, transition: Transition<in Bitmap>) {
                         holder.itemView.listViewImage.run {

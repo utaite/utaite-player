@@ -6,8 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import com.utaite.player.BuildConfig
 
 
-const val INIT = "INIT"
-const val SORTED = "SORTED"
+const val IS_INIT = "IS_INIT"
+const val IS_SORTED = "IS_SORTED"
+const val IS_LYRICS = "IS_LYRICS"
 
 
 class PreferenceUtil private constructor(context: Context) {

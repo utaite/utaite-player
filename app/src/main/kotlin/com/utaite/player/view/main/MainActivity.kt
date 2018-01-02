@@ -13,7 +13,7 @@ import com.utaite.player.base.BaseActivity
 import com.utaite.player.rest.Data
 import com.utaite.player.rest.DataUtil
 import com.utaite.player.rest.RestUtil
-import com.utaite.player.rest.URL
+import com.utaite.player.rest.WATCH
 import com.utaite.player.util.*
 import com.utaite.player.view.list.ListFragment
 import io.reactivex.Observable
@@ -40,6 +40,7 @@ class MainActivity : BaseActivity() {
                     .map { it[0] to it[1] }
                     .subscribe({ (first, second) ->
                         when {
+                            PreferenceUtil.getInstance(applicationContext).getBoolean(IS_INIT, true) -> Unit
                             second - first > SettingUtil.BACK_PRESS_TIME -> ToastUtil.getInstance(applicationContext).text(self, R.string.onBackPressed)
                             else -> finish()
                         }
@@ -60,22 +61,24 @@ class MainActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
 
-        menuSubject.subscribe({ menu.findItem(R.id.mainMenuSorted).isVisible = it }, { Log.e(ERROR, it.toString()) })
+        menuSubject.subscribe({
+            menu.findItem(R.id.mainMenuSorted).isVisible = it
+        }, { Log.e(ERROR, it.toString()) })
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.mainMenuSorted) {
-            val sortedIndex: Int = PreferenceUtil.getInstance(applicationContext).getInt(SORTED, 0)
+            val sortedIndex: Int = PreferenceUtil.getInstance(applicationContext).getInt(IS_SORTED, 0)
             val sortedList: Array<String> = arrayOf(
-                    getString(R.string.list_sorted_most_view),
                     getString(R.string.list_sorted_newest_upload),
+                    getString(R.string.list_sorted_most_view),
                     getString(R.string.list_sorted_title)
             )
             AlertDialog.Builder(self).run {
                 setTitle(getString(R.string.list_sorted_alert_title))
                 setSingleChoiceItems(sortedList, sortedIndex, { dialog, which ->
-                    PreferenceUtil.getInstance(applicationContext).setInt(SORTED, which)
+                    PreferenceUtil.getInstance(applicationContext).setInt(IS_SORTED, which)
                     dialog.dismiss()
                     loadViewPager(currentPosition = mainViewPager.currentItem)
                 })
@@ -95,7 +98,7 @@ class MainActivity : BaseActivity() {
             android.content.res.Configuration.ORIENTATION_PORTRAIT -> SettingUtil.RECYCLER_SPAN_COUNT = 2
         }
 
-        val isInit: Boolean = PreferenceUtil.getInstance(applicationContext).getBoolean(INIT, true)
+        val isInit: Boolean = PreferenceUtil.getInstance(applicationContext).getBoolean(IS_INIT, true)
         when (isInit) {
             false -> loadTabLayout()
             true -> {
@@ -124,22 +127,23 @@ class MainActivity : BaseActivity() {
                         })
                         .flatMap {
                             Observable.fromIterable(it)
-                                    .flatMap { RestUtil.getInfo(it.url) }
+                                    .flatMap { RestUtil.getInfo(it.watch) }
                         }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnComplete { loadTabLayout() }
+                        .doOnComplete {
+                            PreferenceUtil.getInstance(applicationContext).setBoolean(IS_INIT, false)
+                            loadTabLayout()
+                        }
                         .observeOn(Schedulers.io())
                         .subscribe({ info ->
                             Realm.getDefaultInstance().executeTransaction {
                                 val url: String = info.thumb.watchUrl.run { substring(indexOf("sm") + 2) }
-                                val data: Data? = it.where(Data::class.java).equalTo(URL, url).findFirst()
+                                val data: Data? = it.where(Data::class.java).equalTo(WATCH, url).findFirst()
                                 data?.count = info.thumb.viewCounter.toInt()
                             }
                         }, { Log.e(NETWORK_ERROR, it.toString()) })
                         .apply { disposables.add(this) }
-
-                PreferenceUtil.getInstance(applicationContext).setBoolean(INIT, false)
             }
         }
     }
@@ -186,18 +190,17 @@ class MainActivity : BaseActivity() {
 
     private fun getDataSet(): List<ListFragment> =
             listOf(
-                    newListInstance(R.string.utaite_ayaponzu),
-                    newListInstance(R.string.utaite_hiina),
-                    newListInstance(R.string.utaite_kurokumo),
-                    newListInstance(R.string.utaite_lailai),
                     newListInstance(R.string.utaite_nameless),
+                    newListInstance(R.string.utaite_lailai),
                     newListInstance(R.string.utaite_ribonnu),
+                    newListInstance(R.string.utaite_ayaponzu),
                     newListInstance(R.string.utaite_wotamin),
-                    newListInstance(R.string.utaite_yuikonnu)
+                    newListInstance(R.string.utaite_yuikonnu),
+                    newListInstance(R.string.utaite_kurokumo),
+                    newListInstance(R.string.utaite_hiina)
             )
 
     private fun MutableList<Data>.addAll(vararg dataList: List<Data>) =
             dataList.forEach { addAll(it) }
-
 
 }

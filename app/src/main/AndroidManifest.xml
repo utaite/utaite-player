@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.detail.DetailActivity" />
+        <activity
+            android:name=".view.detail.DetailActivity"
+            android:configChanges="orientation|screenSize" />
 
     </application>
 

@@ -14,6 +14,15 @@
         android:id="@+id/detailWebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/detailLyrics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textSize="40sp"
         android:visibility="gone" />
 
 </LinearLayout>

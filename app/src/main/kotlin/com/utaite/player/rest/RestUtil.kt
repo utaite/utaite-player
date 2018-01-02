@@ -114,8 +114,8 @@ class RestUtil {
     }
 
     interface GetInfo {
-        @GET("sm{url}")
-        fun getInfo(@Path("url") url: String
+        @GET("sm{watch}")
+        fun getInfo(@Path("watch") url: String
         ): Observable<Info>
     }
 

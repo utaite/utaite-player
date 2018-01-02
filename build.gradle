@@ -7,7 +7,6 @@ buildscript {
 
         rxkotlin_version = "2.1.0"
         rxandroid_version = "2.0.1"
-        rxbinding_version = "2.0.0"
 
         retrofit_version = "2.3.0"
         okhttp_version = "3.8.1"

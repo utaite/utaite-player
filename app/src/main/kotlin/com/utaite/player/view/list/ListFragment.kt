@@ -7,7 +7,7 @@ import com.utaite.player.base.BaseFragment
 import com.utaite.player.rest.*
 import com.utaite.player.util.OnItemClickListener
 import com.utaite.player.util.PreferenceUtil
-import com.utaite.player.util.SORTED
+import com.utaite.player.util.IS_SORTED
 import com.utaite.player.util.SettingUtil
 import com.utaite.player.view.detail.DetailActivity
 import io.realm.Realm
@@ -16,9 +16,9 @@ import io.realm.Sort
 import kotlinx.android.synthetic.main.fragment_list.*
 
 
-private const val SORTED_MOST_VIEW = 0
-private const val SORTED_NEWEST_UPLOAD = 1
-private const val SORTED_TITLE = 2
+private const val SORTED_TITLE = 0
+private const val SORTED_MOST_VIEW = 1
+private const val SORTED_NEWEST_UPLOAD = 2
 
 
 class ListFragment : BaseFragment(), OnItemClickListener<Data> {
@@ -28,11 +28,11 @@ class ListFragment : BaseFragment(), OnItemClickListener<Data> {
 
     override fun init() {
         Realm.getDefaultInstance().executeTransaction {
-            val sortedIndex: Int = PreferenceUtil.getInstance(activity.applicationContext).getInt(SORTED, 0)
+            val sortedIndex: Int = PreferenceUtil.getInstance(activity.applicationContext).getInt(IS_SORTED, 0)
             val dataSet: MutableList<Data> = when (sortedIndex) {
+                SORTED_TITLE -> it.getDataSet().findAllSorted(TITLE)
                 SORTED_MOST_VIEW -> it.getDataSet().findAllSorted(COUNT, Sort.DESCENDING)
                 SORTED_NEWEST_UPLOAD -> it.getDataSet().findAllSorted(INDEX, Sort.DESCENDING)
-                SORTED_TITLE -> it.getDataSet().findAllSorted(TITLE)
                 else -> it.getDataSet().findAll()
             }.toMutableList()
 
@@ -50,7 +50,7 @@ class ListFragment : BaseFragment(), OnItemClickListener<Data> {
         val intent: Intent = Intent(activity, DetailActivity::class.java).apply {
             putExtra(UTAITE, item.utaite)
             putExtra(TITLE, item.title)
-            putExtra(URL, item.url)
+            putExtra(WATCH, item.watch)
         }
         startActivity(intent)
     }

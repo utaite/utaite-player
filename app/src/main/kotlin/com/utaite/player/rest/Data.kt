@@ -8,6 +8,6 @@ open class Data(
         @PrimaryKey var index: Int = 0,
         var utaite: Int = 0,
         var title: String = "",
-        var url: String = "",
+        var watch: String = "",
         var count: Int = 0
-) : RealmObject()
+        ) : RealmObject()

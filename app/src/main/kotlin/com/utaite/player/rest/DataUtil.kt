@@ -7,7 +7,7 @@ import io.realm.Realm
 const val INDEX = "index"
 const val UTAITE = "utaite"
 const val TITLE = "title"
-const val URL = "url"
+const val WATCH = "watch"
 const val COUNT = "count"
 
 
@@ -52,7 +52,7 @@ class DataUtil {
                     createObject(Data::class.java, index).run {
                         utaite = it.utaite
                         title = it.title
-                        url = it.url
+                        watch = it.watch
                     }
                 }
 
