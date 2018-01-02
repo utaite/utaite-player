@@ -18,7 +18,7 @@ import com.utaite.player.util.*
 import com.utaite.player.view.list.ListFragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Function4
+import io.reactivex.functions.Function8
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.realm.Realm
@@ -68,8 +68,8 @@ class MainActivity : BaseActivity() {
         if (item.itemId == R.id.mainMenuSorted) {
             val sortedIndex: Int = PreferenceUtil.getInstance(applicationContext).getInt(SORTED, 0)
             val sortedList: Array<String> = arrayOf(
-                    getString(R.string.list_sorted_newest_upload),
                     getString(R.string.list_sorted_most_view),
+                    getString(R.string.list_sorted_newest_upload),
                     getString(R.string.list_sorted_title)
             )
             AlertDialog.Builder(self).run {
@@ -101,18 +101,26 @@ class MainActivity : BaseActivity() {
             true -> {
                 Realm.getDefaultInstance().executeTransaction { it.delete(Data::class.java) }
 
-                Observable.zip(RestUtil.getHiinaData(),
+                Observable.zip(RestUtil.getAyaponzuData(),
+                        RestUtil.getHiinaData(),
                         RestUtil.getKurokumoData(),
+                        RestUtil.getLaiLaiData(),
                         RestUtil.getNamelessData(),
+                        RestUtil.getRibonnuData(),
+                        RestUtil.getWotaminData(),
                         RestUtil.getYuikonnuData(),
-                        Function4 { hiina: List<Data>, kurokumo: List<Data>, nameless: List<Data>, yuikonnu: List<Data> ->
+                        Function8 { ayaponzu: List<Data>, hiina: List<Data>, kurokumo: List<Data>, lailai: List<Data>, nameless: List<Data>, ribonnu: List<Data>, wotamin: List<Data>, yuikonnu: List<Data> ->
+                            DataUtil.initAyaponzu(ayaponzu)
                             DataUtil.initHiina(hiina)
                             DataUtil.initKurokumo(kurokumo)
+                            DataUtil.initLailai(lailai)
                             DataUtil.initNameless(nameless)
+                            DataUtil.initRibonnu(ribonnu)
+                            DataUtil.initWotamin(wotamin)
                             DataUtil.initYuikonnu(yuikonnu)
 
                             val list: MutableList<Data> = mutableListOf()
-                            list.apply { addAll(hiina, kurokumo, nameless, yuikonnu) }
+                            list.apply { addAll(ayaponzu, hiina, kurokumo, lailai, nameless, ribonnu, wotamin, yuikonnu) }
                         })
                         .flatMap {
                             Observable.fromIterable(it)
@@ -178,9 +186,13 @@ class MainActivity : BaseActivity() {
 
     private fun getDataSet(): List<ListFragment> =
             listOf(
+                    newListInstance(R.string.utaite_ayaponzu),
                     newListInstance(R.string.utaite_hiina),
                     newListInstance(R.string.utaite_kurokumo),
+                    newListInstance(R.string.utaite_lailai),
                     newListInstance(R.string.utaite_nameless),
+                    newListInstance(R.string.utaite_ribonnu),
+                    newListInstance(R.string.utaite_wotamin),
                     newListInstance(R.string.utaite_yuikonnu)
             )
 

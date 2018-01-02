@@ -4,7 +4,6 @@ import com.utaite.player.BuildConfig
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -48,6 +47,11 @@ class RestUtil {
                         .create(RestUtil.GetInfo::class.java)
                         .getInfo(url)
 
+        fun getAyaponzuData(): Observable<List<Data>> =
+                RestUtil.getDataInstance()
+                        .create(RestUtil.AyaponzuData::class.java)
+                        .getAyaponzuData()
+
         fun getHiinaData(): Observable<List<Data>> =
                 RestUtil.getDataInstance()
                         .create(RestUtil.HiinaData::class.java)
@@ -58,10 +62,25 @@ class RestUtil {
                         .create(RestUtil.KurokumoData::class.java)
                         .getKurokumoData()
 
+        fun getLaiLaiData(): Observable<List<Data>> =
+                RestUtil.getDataInstance()
+                        .create(RestUtil.LaiLaiData::class.java)
+                        .getLaiLaiData()
+
         fun getNamelessData(): Observable<List<Data>> =
                 RestUtil.getDataInstance()
                         .create(RestUtil.NamelessData::class.java)
                         .getNamelessData()
+
+        fun getRibonnuData(): Observable<List<Data>> =
+                RestUtil.getDataInstance()
+                        .create(RestUtil.RibonnuData::class.java)
+                        .getRibonnuData()
+
+        fun getWotaminData(): Observable<List<Data>> =
+                RestUtil.getDataInstance()
+                        .create(RestUtil.WotaminData::class.java)
+                        .getWotaminData()
 
         fun getYuikonnuData(): Observable<List<Data>> =
                 RestUtil.getDataInstance()
@@ -100,6 +119,12 @@ class RestUtil {
         ): Observable<Info>
     }
 
+    interface AyaponzuData {
+        @GET("AyaponzuData.json")
+        fun getAyaponzuData(
+        ): Observable<List<Data>>
+    }
+
     interface HiinaData {
         @GET("HiinaData.json")
         fun getHiinaData(
@@ -112,9 +137,27 @@ class RestUtil {
         ): Observable<List<Data>>
     }
 
+    interface LaiLaiData {
+        @GET("LaiLaiData.json")
+        fun getLaiLaiData(
+        ): Observable<List<Data>>
+    }
+
     interface NamelessData {
         @GET("NamelessData.json")
         fun getNamelessData(
+        ): Observable<List<Data>>
+    }
+
+    interface RibonnuData {
+        @GET("RibonnuData.json")
+        fun getRibonnuData(
+        ): Observable<List<Data>>
+    }
+
+    interface WotaminData {
+        @GET("WotaminData.json")
+        fun getWotaminData(
         ): Observable<List<Data>>
     }
 

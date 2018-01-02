@@ -1,11 +1,6 @@
 package com.utaite.player.rest
 
-import android.util.Log
 import com.utaite.player.R
-import com.utaite.player.base.BaseActivity
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 
 
@@ -23,14 +18,26 @@ class DataUtil {
         private fun init(dataSet: List<Data>) =
                 Realm.getDefaultInstance().executeTransaction { it.setDataSet(dataSet) }
 
+        fun initAyaponzu(dataSet: List<Data>) =
+                init(dataSet.map { it.apply { utaite = R.string.utaite_ayaponzu } })
+
         fun initHiina(dataSet: List<Data>) =
                 init(dataSet.map { it.apply { utaite = R.string.utaite_hiina } })
 
         fun initKurokumo(dataSet: List<Data>) =
                 init(dataSet.map { it.apply { utaite = R.string.utaite_kurokumo } })
 
+        fun initLailai(dataSet: List<Data>) =
+                init(dataSet.map { it.apply { utaite = R.string.utaite_lailai } })
+
         fun initNameless(dataSet: List<Data>) =
                 init(dataSet.map { it.apply { utaite = R.string.utaite_nameless } })
+
+        fun initRibonnu(dataSet: List<Data>) =
+                init(dataSet.map { it.apply { utaite = R.string.utaite_ribonnu } })
+
+        fun initWotamin(dataSet: List<Data>) =
+                init(dataSet.map { it.apply { utaite = R.string.utaite_wotamin } })
 
         fun initYuikonnu(dataSet: List<Data>) =
                 init(dataSet.map { it.apply { utaite = R.string.utaite_yuikonnu } })
