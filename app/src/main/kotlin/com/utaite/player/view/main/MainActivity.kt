@@ -61,9 +61,11 @@ class MainActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
 
-        menuSubject.subscribe({
-            menu.findItem(R.id.mainMenuSorted).isVisible = it
-        }, { Log.e(ERROR, it.toString()) })
+        menuSubject
+                .subscribe({
+                    menu.findItem(R.id.mainMenuSorted).isVisible = it
+                }, { Log.e(ERROR, it.toString()) })
+                .apply { disposables.add(this) }
         return true
     }
 

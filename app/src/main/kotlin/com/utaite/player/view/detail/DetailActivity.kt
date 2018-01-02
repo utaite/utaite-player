@@ -3,6 +3,7 @@ package com.utaite.player.view.detail
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +14,8 @@ import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
 import com.utaite.player.rest.*
 import com.utaite.player.util.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.activity_detail.*
 
@@ -40,24 +43,26 @@ class DetailActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.detail_menu, menu)
 
-        menuSubject.subscribe({
-            when (resources.configuration.orientation) {
-                android.content.res.Configuration.ORIENTATION_LANDSCAPE -> {
-                    detailLyrics.visibility = View.GONE
-                    menu.findItem(R.id.detailMenuLyrics).isVisible = false
-                }
-                android.content.res.Configuration.ORIENTATION_PORTRAIT -> {
-                    val pair = when (it) {
-                        false -> View.VISIBLE to android.R.drawable.ic_menu_revert
-                        true -> View.GONE to android.R.drawable.ic_menu_more
+        menuSubject
+                .subscribe({
+                    when (resources.configuration.orientation) {
+                        android.content.res.Configuration.ORIENTATION_LANDSCAPE -> {
+                            detailLayout.visibility = View.GONE
+                            menu.findItem(R.id.detailMenuLyrics).isVisible = false
+                        }
+                        android.content.res.Configuration.ORIENTATION_PORTRAIT -> {
+                            val pair = when (it) {
+                                false -> View.VISIBLE to android.R.drawable.ic_menu_revert
+                                true -> View.GONE to android.R.drawable.ic_menu_more
+                            }
+                            detailLayout.visibility = pair.first
+                            menu.findItem(R.id.detailMenuLyrics).setIcon(pair.second)
+                            menu.findItem(R.id.detailMenuLyrics).isVisible = true
+                            PreferenceUtil.getInstance(applicationContext).setBoolean(IS_LYRICS, it)
+                        }
                     }
-                    detailLyrics.visibility = pair.first
-                    menu.findItem(R.id.detailMenuLyrics).setIcon(pair.second)
-                    menu.findItem(R.id.detailMenuLyrics).isVisible = true
-                    PreferenceUtil.getInstance(applicationContext).setBoolean(IS_LYRICS, it)
-                }
-            }
-        }, { Log.e(ERROR, it.toString()) })
+                }, { Log.e(ERROR, it.toString()) })
+                .apply { disposables.add(this) }
         return true
     }
 
@@ -72,6 +77,14 @@ class DetailActivity : BaseActivity() {
 
     override fun init() {
         supportActionBar?.setTitle(self, "${getString(intent.getIntExtra(UTAITE, 0))} - ${intent.getStringExtra(TITLE)}")
+
+        RestUtil.getLyrics(intent.getStringExtra(TITLE))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    detailLyrics.text = it.string()
+                }, { Log.e(NETWORK_ERROR, it.toString()) })
+                .apply { disposables.add(this) }
 
         detailWebView.run {
             loadUrl("http://embed.nicovideo.jp/watch/sm${intent.getStringExtra(WATCH)}")
@@ -93,11 +106,6 @@ class DetailActivity : BaseActivity() {
                 }
 
                 override fun onPageFinished(view: WebView?, url: String?) {
-                    RestUtil.getLyrics(intent.getStringExtra(TITLE))
-                            .subscribe({
-                                detailLyrics.text = it.string()
-                            }, { Log.e(NETWORK_ERROR, it.toString()) })
-
                     detailProgressBar.visibility = View.GONE
                     detailWebView.visibility = View.VISIBLE
 

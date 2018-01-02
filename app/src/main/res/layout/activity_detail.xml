@@ -17,12 +17,23 @@
         android:layout_weight="1"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/detailLyrics"
+    <ScrollView
+        android:id="@+id/detailLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:textSize="40sp"
-        android:visibility="gone" />
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/detailLyrics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:padding="4dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp" />
+
+    </ScrollView>
 
 </LinearLayout>

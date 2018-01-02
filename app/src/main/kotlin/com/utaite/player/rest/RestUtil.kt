@@ -49,7 +49,7 @@ class RestUtil {
                         .getInfo(watch)
 
         fun getLyrics(title: String): Observable<ResponseBody> =
-                RestUtil.getInfoInstance()
+                RestUtil.getResourceInstance()
                         .create(RestUtil.GetLyrics::class.java)
                         .getLyrics(title)
 
