@@ -64,7 +64,10 @@ class MainActivity : BaseActivity() {
         menuSubject
                 .subscribe({
                     menu.findItem(R.id.mainMenuSorted).isVisible = it
-                }, { Log.e(ERROR, it.toString()) })
+                }, {
+                    Log.e(ERROR, it.toString())
+                    finish()
+                })
                 .apply { disposables.add(this) }
         return true
     }
@@ -144,7 +147,10 @@ class MainActivity : BaseActivity() {
                                 val data: Data? = it.where(Data::class.java).equalTo(WATCH, url).findFirst()
                                 data?.count = info.thumb.viewCounter.toInt()
                             }
-                        }, { Log.e(NETWORK_ERROR, it.toString()) })
+                        }, {
+                            Log.e(NETWORK_ERROR, it.toString())
+                            finish()
+                        })
                         .apply { disposables.add(this) }
             }
         }

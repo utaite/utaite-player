@@ -3,13 +3,16 @@ package com.utaite.player.view.detail
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
-import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
 import com.utaite.player.rest.*
@@ -52,8 +55,8 @@ class DetailActivity : BaseActivity() {
                         }
                         android.content.res.Configuration.ORIENTATION_PORTRAIT -> {
                             val pair = when (it) {
-                                false -> View.VISIBLE to android.R.drawable.ic_menu_revert
-                                true -> View.GONE to android.R.drawable.ic_menu_more
+                                false -> View.GONE to android.R.drawable.ic_menu_more
+                                true -> View.VISIBLE to android.R.drawable.ic_menu_revert
                             }
                             detailLayout.visibility = pair.first
                             menu.findItem(R.id.detailMenuLyrics).setIcon(pair.second)
@@ -61,7 +64,10 @@ class DetailActivity : BaseActivity() {
                             PreferenceUtil.getInstance(applicationContext).setBoolean(IS_LYRICS, it)
                         }
                     }
-                }, { Log.e(ERROR, it.toString()) })
+                }, {
+                    Log.e(ERROR, it.toString())
+                    finish()
+                })
                 .apply { disposables.add(this) }
         return true
     }
@@ -83,7 +89,13 @@ class DetailActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     detailLyrics.text = it.string()
-                }, { Log.e(NETWORK_ERROR, it.toString()) })
+                    detailLyrics.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15F)
+                }, {
+                    Log.e(NETWORK_ERROR, it.toString())
+                    detailLyrics.layoutParams = (detailLyrics.layoutParams as FrameLayout.LayoutParams).apply { gravity = Gravity.CENTER }
+                    detailLyrics.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20F)
+                    detailLyrics.text = getString(R.string.detail_lyrics_load_failed)
+                })
                 .apply { disposables.add(this) }
 
         detailWebView.run {
