@@ -200,7 +200,6 @@ class MainActivity : BaseActivity() {
                     newListInstance(R.string.utaite_lailai),
                     newListInstance(R.string.utaite_ribonnu),
                     newListInstance(R.string.utaite_ayaponzu),
-                    newListInstance(R.string.utaite_wotamin),
                     newListInstance(R.string.utaite_yuikonnu),
                     newListInstance(R.string.utaite_kurokumo),
                     newListInstance(R.string.utaite_hiina)
