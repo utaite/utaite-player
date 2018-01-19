@@ -18,7 +18,7 @@ import com.utaite.player.util.*
 import com.utaite.player.view.list.ListFragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Function8
+import io.reactivex.functions.Function7
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.realm.Realm
@@ -115,20 +115,18 @@ class MainActivity : BaseActivity() {
                         RestUtil.getLaiLaiData(),
                         RestUtil.getNamelessData(),
                         RestUtil.getRibonnuData(),
-                        RestUtil.getWotaminData(),
                         RestUtil.getYuikonnuData(),
-                        Function8 { ayaponzu: List<Data>, hiina: List<Data>, kurokumo: List<Data>, lailai: List<Data>, nameless: List<Data>, ribonnu: List<Data>, wotamin: List<Data>, yuikonnu: List<Data> ->
+                        Function7 { ayaponzu: List<Data>, hiina: List<Data>, kurokumo: List<Data>, lailai: List<Data>, nameless: List<Data>, ribonnu: List<Data>, yuikonnu: List<Data> ->
                             DataUtil.initAyaponzu(ayaponzu)
                             DataUtil.initHiina(hiina)
                             DataUtil.initKurokumo(kurokumo)
                             DataUtil.initLailai(lailai)
                             DataUtil.initNameless(nameless)
                             DataUtil.initRibonnu(ribonnu)
-                            DataUtil.initWotamin(wotamin)
                             DataUtil.initYuikonnu(yuikonnu)
 
                             val list: MutableList<Data> = mutableListOf()
-                            list.apply { addAll(ayaponzu, hiina, kurokumo, lailai, nameless, ribonnu, wotamin, yuikonnu) }
+                            list.apply { addAll(ayaponzu, hiina, kurokumo, lailai, nameless, ribonnu, yuikonnu) }
                         })
                         .flatMap {
                             Observable.fromIterable(it)
