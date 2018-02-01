@@ -22,7 +22,7 @@
     <string name="list_sorted_most_view">조회순</string>
     <string name="list_sorted_title">제목순</string>
 
-    <string name="main_version_error">최소 %1$s버전부터 실행이 가능합니다. 최신 버전으로 업데이트 하시겠습니까?</string>
+    <string name="main_version_error">현재 버전에서는 실행이 불가능합니다. 최신 버전으로 업데이트 하시겠습니까?</string>
     <string name="main_version_warning">새로운 버전(%1$s)이 있습니다. 최신 버전으로 업데이트 하시겠습니까?</string>
 
     <string name="detail_network_error">네트워크에 접속할 수 없습니다.</string>
