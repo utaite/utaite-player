@@ -4,10 +4,12 @@ import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.ActionBar
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.utaite.player.R
+import com.utaite.player.base.BaseActivity
 import com.utaite.player.rest.UTAITE
 import com.utaite.player.view.list.ListFragment
 import kotlinx.android.synthetic.main.common_action_bar.view.*
@@ -19,6 +21,12 @@ const val NETWORK_ERROR = "NETWORK_ERROR"
 
 fun getView(context: Context, resId: Int): View =
         LayoutInflater.from(context).inflate(resId, null)
+
+fun getDialog(activity: BaseActivity, message: String): AlertDialog.Builder =
+        AlertDialog.Builder(activity).apply {
+            setTitle(activity.getString(R.string.common_alert_title))
+            setMessage(message)
+        }
 
 fun TextView.setFont(context: Context) {
     typeface = Typeface.createFromAsset(context.assets, SettingUtil.FONT)

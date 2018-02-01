@@ -1,6 +1,8 @@
 package com.utaite.player.view.main
 
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AlertDialog
 import android.util.Log
@@ -8,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.utaite.player.BuildConfig
 import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
 import com.utaite.player.rest.Data
@@ -15,6 +18,7 @@ import com.utaite.player.rest.DataUtil
 import com.utaite.player.rest.RestUtil
 import com.utaite.player.rest.WATCH
 import com.utaite.player.util.*
+import com.utaite.player.util.SettingUtil.Companion.MARKET_URL
 import com.utaite.player.view.list.ListFragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -95,6 +99,46 @@ class MainActivity : BaseActivity() {
     }
 
     override fun init() {
+        val currentVersion: Int = BuildConfig.VERSION_NAME.toVersion()
+        RestUtil.getVersion()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ version ->
+                    when (currentVersion >= version.minVersion.toVersion()) {
+                        false -> getDialog(self, getString(R.string.main_version_error, version.newVersion)).apply {
+                            setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
+                                dialog.dismiss()
+                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)))
+                                finish()
+                            })
+                            setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ -> dialog.dismiss() })
+                            setCancelable(false)
+                            show()
+                        }
+                        true -> when (currentVersion >= version.warningVersion.toVersion()) {
+                            false -> getDialog(self, getString(R.string.main_version_warning, version.newVersion)).apply {
+                                setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
+                                    dialog.dismiss()
+                                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)))
+                                    finish()
+                                })
+                                setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ ->
+                                    dialog.dismiss()
+                                    loadData()
+                                })
+                                setCancelable(false)
+                                show()
+                            }
+                            true -> loadData()
+                        }
+                    }
+                }, {})
+    }
+
+    private fun String.toVersion(): Int =
+            replace(".", "").toInt()
+
+    private fun loadData() {
         supportActionBar?.setTitle(self, getString(R.string.app_name))
         menuSubject.onNext(false)
 
