@@ -1,9 +1,7 @@
 package com.utaite.player.view.detail
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.util.Log
 import android.util.TypedValue
@@ -16,7 +14,10 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import com.utaite.player.R
 import com.utaite.player.base.BaseActivity
-import com.utaite.player.rest.*
+import com.utaite.player.rest.RestUtil
+import com.utaite.player.rest.TITLE
+import com.utaite.player.rest.UTAITE
+import com.utaite.player.rest.WATCH
 import com.utaite.player.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -51,17 +52,17 @@ class DetailActivity : BaseActivity() {
                 .subscribe({
                     when (resources.configuration.orientation) {
                         android.content.res.Configuration.ORIENTATION_LANDSCAPE -> {
+                            supportActionBar?.hide()
                             detailLayout.visibility = View.GONE
-                            menu.findItem(R.id.detailMenuLyrics).isVisible = false
                         }
                         android.content.res.Configuration.ORIENTATION_PORTRAIT -> {
+                            supportActionBar?.show()
                             val pair = when (it) {
                                 false -> View.GONE to android.R.drawable.ic_menu_more
                                 true -> View.VISIBLE to android.R.drawable.ic_menu_revert
                             }
                             detailLayout.visibility = pair.first
                             menu.findItem(R.id.detailMenuLyrics).setIcon(pair.second)
-                            menu.findItem(R.id.detailMenuLyrics).isVisible = true
                             PreferenceUtil.getInstance(applicationContext).setBoolean(IS_LYRICS, it)
                         }
                     }
@@ -85,12 +86,14 @@ class DetailActivity : BaseActivity() {
     override fun init() {
         supportActionBar?.setTitle(self, "${getString(intent.getIntExtra(UTAITE, 0))} - ${intent.getStringExtra(TITLE)}")
 
-        when (networkCheck()) {
-            false -> {
-                detailProgressBar.visibility = View.GONE
-                ToastUtil.getInstance(applicationContext).text(self, R.string.detail_network_error)
-            }
+        if(resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+            supportActionBar?.hide()
+        }
+
+        when (networkCheck(self)) {
+            false -> ToastUtil.getInstance(applicationContext).text(self, R.string.common_network_error)
             true -> {
+                detailProgressBar.visibility = View.VISIBLE
                 RestUtil.getLyrics(intent.getStringExtra(TITLE))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -128,6 +131,10 @@ class DetailActivity : BaseActivity() {
                             detailProgressBar.visibility = View.GONE
                             detailWebView.visibility = View.VISIBLE
 
+                            loadUrl("javascript:(function(){" +
+                                    "document.getElementsByClassName('f19uq8e4 hidden ads-in-back')[0].style.display = 'none'" +
+                                    "})()")
+
                             val isLyrics: Boolean = PreferenceUtil.getInstance(applicationContext).getBoolean(IS_LYRICS, true)
                             menuSubject.onNext(isLyrics)
                         }
@@ -136,8 +143,5 @@ class DetailActivity : BaseActivity() {
             }
         }
     }
-
-    private fun networkCheck(): Boolean =
-            (self.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo != null
 
 }

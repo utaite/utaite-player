@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.utaite.player.BuildConfig
@@ -27,6 +28,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.common_activity_await.*
 
 
 class MainActivity : BaseActivity() {
@@ -44,6 +46,7 @@ class MainActivity : BaseActivity() {
                     .map { it[0] to it[1] }
                     .subscribe({ (first, second) ->
                         when {
+                            SettingUtil.RECYCLER_SPAN_COUNT == 0 -> finish()
                             PreferenceUtil.getInstance(applicationContext).getBoolean(IS_INIT, true) -> Unit
                             second - first > SettingUtil.BACK_PRESS_TIME -> ToastUtil.getInstance(applicationContext).text(self, R.string.onBackPressed)
                             else -> finish()
@@ -59,6 +62,7 @@ class MainActivity : BaseActivity() {
             android.content.res.Configuration.ORIENTATION_LANDSCAPE -> SettingUtil.RECYCLER_SPAN_COUNT = 3
             android.content.res.Configuration.ORIENTATION_PORTRAIT -> SettingUtil.RECYCLER_SPAN_COUNT = 2
         }
+        loadViewPager(currentPosition = mainViewPager.currentItem)
         super.onConfigurationChanged(newConfig)
     }
 
@@ -99,49 +103,73 @@ class MainActivity : BaseActivity() {
     }
 
     override fun init() {
-        val currentVersion: Int = BuildConfig.VERSION_NAME.toVersion()
-        RestUtil.getVersion()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ version ->
-                    when (currentVersion >= version.minVersion.toVersion()) {
-                        false -> getDialog(self, getString(R.string.main_version_error, version.newVersion)).apply {
-                            setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
-                                dialog.dismiss()
-                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)))
-                                finish()
-                            })
-                            setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ -> dialog.dismiss() })
-                            setCancelable(false)
-                            show()
-                        }
-                        true -> when (currentVersion >= version.warningVersion.toVersion()) {
-                            false -> getDialog(self, getString(R.string.main_version_warning, version.newVersion)).apply {
+        supportActionBar?.setTitle(self, getString(R.string.app_name))
+        menuSubject.onNext(false)
+
+        when (networkCheck(self)) {
+            false -> ToastUtil.getInstance(applicationContext).text(self, R.string.common_network_error)
+            true -> {
+                awaitProgressBar.visibility = View.VISIBLE
+                val currentVersion: Int = BuildConfig.VERSION_NAME.toVersion()
+
+                RestUtil.getVersion()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ version ->
+                            when (currentVersion >= version.minVersion.toVersion()) {
+                                false -> getDialog(self, getString(R.string.main_version_error)).apply {
+                                    setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
+                                        dialog.dismiss()
+                                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)))
+                                        finish()
+                                    })
+                                    setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ ->
+                                        dialog.dismiss()
+                                    })
+                                    setCancelable(false)
+                                    show()
+                                }
+                                true -> when (currentVersion >= version.warningVersion.toVersion()) {
+                                    false -> getDialog(self, getString(R.string.main_version_warning, version.newVersion)).apply {
+                                        setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
+                                            dialog.dismiss()
+                                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)))
+                                            finish()
+                                        })
+                                        setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ ->
+                                            dialog.dismiss()
+                                            loadData()
+                                        })
+                                        setCancelable(false)
+                                        show()
+                                    }
+                                    true -> when (currentVersion > version.newVersion.toVersion()) {
+                                        false -> loadData()
+                                        true -> finish()
+                                    }
+                                }
+                            }
+                        }, {
+                            Log.e(NETWORK_ERROR, it.toString())
+                            getDialog(self, getString(R.string.main_version_error)).apply {
                                 setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
                                     dialog.dismiss()
                                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)))
                                     finish()
                                 })
-                                setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ ->
-                                    dialog.dismiss()
-                                    loadData()
-                                })
+                                setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ -> dialog.dismiss() })
                                 setCancelable(false)
                                 show()
                             }
-                            true -> loadData()
-                        }
-                    }
-                }, {})
+                        })
+            }
+        }
     }
 
     private fun String.toVersion(): Int =
             replace(".", "").toInt()
 
     private fun loadData() {
-        supportActionBar?.setTitle(self, getString(R.string.app_name))
-        menuSubject.onNext(false)
-
         when (resources.configuration.orientation) {
             android.content.res.Configuration.ORIENTATION_LANDSCAPE -> SettingUtil.RECYCLER_SPAN_COUNT = 3
             android.content.res.Configuration.ORIENTATION_PORTRAIT -> SettingUtil.RECYCLER_SPAN_COUNT = 2

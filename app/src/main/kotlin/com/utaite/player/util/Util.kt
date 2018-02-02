@@ -2,6 +2,7 @@ package com.utaite.player.util
 
 import android.content.Context
 import android.graphics.Typeface
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
@@ -18,6 +19,9 @@ import kotlinx.android.synthetic.main.common_action_bar.view.*
 const val ERROR = "ERROR"
 const val NETWORK_ERROR = "NETWORK_ERROR"
 
+
+fun networkCheck(context: Context): Boolean =
+        (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo != null
 
 fun getView(context: Context, resId: Int): View =
         LayoutInflater.from(context).inflate(resId, null)
