@@ -25,6 +25,14 @@ android {
     }
 }
 
+configurations {
+    compile.exclude group: "stax"
+    compile.exclude group: "xpp3"
+
+    cleanedAnnotations
+    compile.exclude group: "org.jetbrains" , module:"annotations"
+}
+
 dependencies {
     // Android Support
     compile "com.android.support:appcompat-v7:$support_version"
