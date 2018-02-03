@@ -10,6 +10,8 @@ const val IS_INIT = "IS_INIT"
 const val IS_SORTED = "IS_SORTED"
 const val IS_LYRICS = "IS_LYRICS"
 
+const val TOTAL_COUNT = "TOTAL_COUNT"
+
 
 class PreferenceUtil private constructor(context: Context) {
 

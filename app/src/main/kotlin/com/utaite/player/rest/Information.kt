@@ -1,7 +1,9 @@
 package com.utaite.player.rest
 
-data class Version(
+data class Information(
         val newVersion: String = "",
         val warningVersion: String = "",
-        val minVersion: String = ""
+        val minVersion: String = "",
+
+        val totalCount: Int = 0
 )

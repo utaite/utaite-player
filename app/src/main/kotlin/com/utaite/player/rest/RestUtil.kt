@@ -53,10 +53,10 @@ class RestUtil {
                         .create(RestUtil.GetLyrics::class.java)
                         .getLyrics(title)
 
-        fun getVersion(): Observable<Version> =
+        fun getInformation(): Observable<Information> =
                 RestUtil.getResourceInstance()
-                        .create(RestUtil.GetVersion::class.java)
-                        .getVersion()
+                        .create(RestUtil.GetInformation::class.java)
+                        .getInformation()
 
         fun getAyaponzuData(): Observable<List<Data>> =
                 RestUtil.getResourceInstance()
@@ -136,10 +136,10 @@ class RestUtil {
         ): Observable<ResponseBody>
     }
 
-    interface GetVersion {
-        @GET("Version.json")
-        fun getVersion(
-        ): Observable<Version>
+    interface GetInformation {
+        @GET("Information.json")
+        fun getInformation(
+        ): Observable<Information>
     }
 
     interface AyaponzuData {

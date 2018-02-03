@@ -1,5 +1,7 @@
 {
   "newVersion": "0.0.1",
   "warningVersion": "0.0.1",
-  "minVersion": "0.0.1"
+  "minVersion": "0.0.1",
+
+  "totalCount": 999
 }
