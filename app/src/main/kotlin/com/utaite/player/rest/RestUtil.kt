@@ -60,7 +60,7 @@ class RestUtil {
 
         fun getUtaiteData(utaite: String): Observable<List<Data>> =
                 RestUtil.getResourceInstance()
-                        .create(RestUtil.UtaiteData::class.java)
+                        .create(RestUtil.GetUtaiteData::class.java)
                         .getUtaiteData("${utaite}Data")
 
         private fun build(url: String): Retrofit =
@@ -107,7 +107,7 @@ class RestUtil {
         ): Observable<Information>
     }
 
-    interface UtaiteData {
+    interface GetUtaiteData {
         @GET("data/{utaite}.json")
         fun getUtaiteData(@Path("utaite") utaite: String
         ): Observable<List<Data>>
