@@ -2,6 +2,7 @@ apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
 apply plugin: "realm-android"
+apply plugin: "io.fabric"
 
 android {
     compileSdkVersion 26
@@ -23,6 +24,11 @@ android {
     sourceSets {
         main.java.srcDirs += "src/main/kotlin"
     }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://maven.fabric.io/public" }
 }
 
 configurations {
@@ -59,4 +65,9 @@ dependencies {
 
     // Calligraphy
     compile "uk.co.chrisjenx:calligraphy:$calligraphy_version"
+
+    // Fabric
+    compile("com.crashlytics.sdk.android:crashlytics:2.8.0@aar") {
+        transitive = true;
+    }
 }

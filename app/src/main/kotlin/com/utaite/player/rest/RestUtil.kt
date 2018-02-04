@@ -58,45 +58,10 @@ class RestUtil {
                         .create(RestUtil.GetInformation::class.java)
                         .getInformation()
 
-        fun getAyaponzuData(): Observable<List<Data>> =
+        fun getUtaiteData(utaite: String): Observable<List<Data>> =
                 RestUtil.getResourceInstance()
-                        .create(RestUtil.AyaponzuData::class.java)
-                        .getAyaponzuData()
-
-        fun getHiinaData(): Observable<List<Data>> =
-                RestUtil.getResourceInstance()
-                        .create(RestUtil.HiinaData::class.java)
-                        .getHiinaData()
-
-        fun getKurokumoData(): Observable<List<Data>> =
-                RestUtil.getResourceInstance()
-                        .create(RestUtil.KurokumoData::class.java)
-                        .getKurokumoData()
-
-        fun getLaiLaiData(): Observable<List<Data>> =
-                RestUtil.getResourceInstance()
-                        .create(RestUtil.LaiLaiData::class.java)
-                        .getLaiLaiData()
-
-        fun getNamelessData(): Observable<List<Data>> =
-                RestUtil.getResourceInstance()
-                        .create(RestUtil.NamelessData::class.java)
-                        .getNamelessData()
-
-        fun getRibonnuData(): Observable<List<Data>> =
-                RestUtil.getResourceInstance()
-                        .create(RestUtil.RibonnuData::class.java)
-                        .getRibonnuData()
-
-        fun getWotaminData(): Observable<List<Data>> =
-                RestUtil.getResourceInstance()
-                        .create(RestUtil.WotaminData::class.java)
-                        .getWotaminData()
-
-        fun getYuikonnuData(): Observable<List<Data>> =
-                RestUtil.getResourceInstance()
-                        .create(RestUtil.YuikonnuData::class.java)
-                        .getYuikonnuData()
+                        .create(RestUtil.UtaiteData::class.java)
+                        .getUtaiteData("${utaite}Data")
 
         private fun build(url: String): Retrofit =
                 build(GsonConverterFactory.create(), url)
@@ -142,51 +107,9 @@ class RestUtil {
         ): Observable<Information>
     }
 
-    interface AyaponzuData {
-        @GET("data/AyaponzuData.json")
-        fun getAyaponzuData(
-        ): Observable<List<Data>>
-    }
-
-    interface HiinaData {
-        @GET("data/HiinaData.json")
-        fun getHiinaData(
-        ): Observable<List<Data>>
-    }
-
-    interface KurokumoData {
-        @GET("data/KurokumoData.json")
-        fun getKurokumoData(
-        ): Observable<List<Data>>
-    }
-
-    interface LaiLaiData {
-        @GET("data/LaiLaiData.json")
-        fun getLaiLaiData(
-        ): Observable<List<Data>>
-    }
-
-    interface NamelessData {
-        @GET("data/NamelessData.json")
-        fun getNamelessData(
-        ): Observable<List<Data>>
-    }
-
-    interface RibonnuData {
-        @GET("data/RibonnuData.json")
-        fun getRibonnuData(
-        ): Observable<List<Data>>
-    }
-
-    interface WotaminData {
-        @GET("data/WotaminData.json")
-        fun getWotaminData(
-        ): Observable<List<Data>>
-    }
-
-    interface YuikonnuData {
-        @GET("data/YuikonnuData.json")
-        fun getYuikonnuData(
+    interface UtaiteData {
+        @GET("data/{utaite}.json")
+        fun getUtaiteData(@Path("utaite") utaite: String
         ): Observable<List<Data>>
     }
 

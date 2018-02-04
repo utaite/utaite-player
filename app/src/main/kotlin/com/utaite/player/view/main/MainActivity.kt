@@ -32,6 +32,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.common_activity_await.*
 
 
+private const val AYAPONZU = "Ayaponzu"
+private const val HIINA = "Hiina"
+private const val KUROKUMO = "Kurokumo"
+private const val LAILAI = "LaiLai"
+private const val NAMELESS = "Nameless"
+private const val RIBONNU = "Ribonnu"
+private const val WOTAMIN = "Wotamin"
+private const val YUIKONNU = "Yuikonnu"
+
+
 class MainActivity : BaseActivity() {
 
     override val layoutId: Int = R.layout.common_activity_await
@@ -209,13 +219,13 @@ class MainActivity : BaseActivity() {
             true -> {
                 Realm.getDefaultInstance().executeTransaction { it.delete(Data::class.java) }
 
-                Observable.zip(RestUtil.getAyaponzuData(),
-                        RestUtil.getHiinaData(),
-                        RestUtil.getKurokumoData(),
-                        RestUtil.getLaiLaiData(),
-                        RestUtil.getNamelessData(),
-                        RestUtil.getRibonnuData(),
-                        RestUtil.getYuikonnuData(),
+                Observable.zip(RestUtil.getUtaiteData(AYAPONZU),
+                        RestUtil.getUtaiteData(HIINA),
+                        RestUtil.getUtaiteData(KUROKUMO),
+                        RestUtil.getUtaiteData(LAILAI),
+                        RestUtil.getUtaiteData(NAMELESS),
+                        RestUtil.getUtaiteData(RIBONNU),
+                        RestUtil.getUtaiteData(YUIKONNU),
                         Function7 { ayaponzu: List<Data>, hiina: List<Data>, kurokumo: List<Data>, lailai: List<Data>, nameless: List<Data>, ribonnu: List<Data>, yuikonnu: List<Data> ->
                             DataUtil.initAyaponzu(ayaponzu)
                             DataUtil.initHiina(hiina)
