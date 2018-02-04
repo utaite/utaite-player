@@ -71,9 +71,9 @@ class MainActivity : BaseActivity() {
         menuInflater.inflate(R.menu.main_menu, menu)
 
         menuSubject
-                .subscribe({
-                    menu.findItem(R.id.mainMenuSort).isVisible = it
-                    menu.findItem(R.id.mainMenuUpdate).isVisible = it
+                .subscribe({ isVisible ->
+                    menu.findItem(R.id.mainMenuSort).isVisible = isVisible
+                    menu.findItem(R.id.mainMenuUpdate).isVisible = isVisible
                 }, {
                     Log.e(ERROR, it.toString())
                     finish()
@@ -103,28 +103,26 @@ class MainActivity : BaseActivity() {
                 return true
             }
             R.id.mainMenuUpdate -> {
-                Realm.getDefaultInstance().executeTransaction {
-                    val currentCount = it.where(Data::class.java).count().toInt()
-                    val totalCount = PreferenceUtil.getInstance(applicationContext).getInt(TOTAL_COUNT, 0)
-                    val latestCount = totalCount - currentCount
+                val currentCount = Realm.getDefaultInstance().where(Data::class.java).count().toInt()
+                val totalCount = PreferenceUtil.getInstance(applicationContext).getInt(TOTAL_COUNT, 0)
+                val latestCount = totalCount - currentCount
 
-                    when (latestCount == 0) {
-                        false -> getDialog(self, getString(R.string.main_update_possible, latestCount)).apply {
-                            setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
-                                dialog.dismiss()
+                when (latestCount == 0) {
+                    false -> getDialog(self, getString(R.string.main_update_possible, latestCount)).apply {
+                        setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
+                            dialog.dismiss()
 
-                                PreferenceUtil.getInstance(applicationContext).setBoolean(IS_INIT, true)
-                                finish()
-                                overridePendingTransition(0, 0)
-                                startActivity(Intent(self, MainActivity::class.java))
-                            })
-                            setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ -> dialog.dismiss() })
-                            show()
-                        }
-                        true -> getDialog(self, R.string.main_update_impossible).apply {
-                            setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ -> dialog.dismiss() })
-                            show()
-                        }
+                            PreferenceUtil.getInstance(applicationContext).setBoolean(IS_INIT, true)
+                            finish()
+                            overridePendingTransition(0, 0)
+                            startActivity(Intent(self, MainActivity::class.java))
+                        })
+                        setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ -> dialog.dismiss() })
+                        show()
+                    }
+                    true -> getDialog(self, R.string.main_update_impossible).apply {
+                        setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ -> dialog.dismiss() })
+                        show()
                     }
                 }
                 return true
@@ -191,6 +189,7 @@ class MainActivity : BaseActivity() {
                                 show()
                             }
                         })
+                        .apply { disposables.add(this) }
             }
         }
     }
@@ -229,16 +228,8 @@ class MainActivity : BaseActivity() {
                             val list: MutableList<Data> = mutableListOf()
                             list.apply { addAll(ayaponzu, hiina, kurokumo, lailai, nameless, ribonnu, yuikonnu) }
                         })
-                        .flatMap {
-                            Observable.fromIterable(it)
-                                    .flatMap { RestUtil.getInfo(it.watch) }
-                        }
-                        /*
-                        .flatMap {
-                            Observable.fromIterable(it)
-                                    .flatMap { RestUtil.getInfo(it.watch) }
-                        }
-                        */
+                        .flatMapIterable { it }
+                        .flatMap { RestUtil.getInfo(it.watch) }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete {
