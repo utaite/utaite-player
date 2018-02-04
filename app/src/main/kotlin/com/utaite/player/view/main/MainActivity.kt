@@ -21,6 +21,7 @@ import com.utaite.player.rest.WATCH
 import com.utaite.player.util.*
 import com.utaite.player.util.SettingUtil.Companion.MARKET_URL
 import com.utaite.player.view.list.ListFragment
+import com.utaite.player.view.list.SORTED_NEWEST_UPLOAD
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Function7
@@ -84,15 +85,15 @@ class MainActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.mainMenuSort -> {
-                val sortedIndex: Int = PreferenceUtil.getInstance(applicationContext).getInt(IS_SORTED, 0)
-                val sortedList: Array<String> = arrayOf(
-                        getString(R.string.list_sorted_newest_upload),
-                        getString(R.string.list_sorted_most_view),
-                        getString(R.string.list_sorted_title)
+                val sortIndex: Int = PreferenceUtil.getInstance(applicationContext).getInt(IS_SORTED, 0)
+                val sortList: Array<String> = arrayOf(
+                        getString(R.string.main_sort_latest_upload),
+                        getString(R.string.main_sort_most_view),
+                        getString(R.string.main_sort_title)
                 )
                 AlertDialog.Builder(self).run {
-                    setTitle(getString(R.string.list_sorted_alert_title))
-                    setSingleChoiceItems(sortedList, sortedIndex, { dialog, which ->
+                    setTitle(getString(R.string.main_sort_alert_title))
+                    setSingleChoiceItems(sortList, sortIndex, { dialog, which ->
                         PreferenceUtil.getInstance(applicationContext).setInt(IS_SORTED, which)
                         dialog.dismiss()
                         loadViewPager(currentPosition = mainViewPager.currentItem)
@@ -105,21 +106,27 @@ class MainActivity : BaseActivity() {
                 Realm.getDefaultInstance().executeTransaction {
                     val currentCount = it.where(Data::class.java).count().toInt()
                     val totalCount = PreferenceUtil.getInstance(applicationContext).getInt(TOTAL_COUNT, 0)
+                    val latestCount = totalCount - currentCount
 
-                    ToastUtil.getInstance(applicationContext).text("currentCount: ${currentCount}\ntotalCount: ${totalCount}")
-                }
+                    when (latestCount == 0) {
+                        false -> getDialog(self, getString(R.string.main_update_possible, latestCount)).apply {
+                            setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
+                                dialog.dismiss()
 
-                /*
-                getDialog(self, "mainMenuUpdate").apply {
-                    setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
-                        dialog.dismiss()
-                    })
-                    setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ ->
-                        dialog.dismiss()
-                    })
-                    show()
+                                PreferenceUtil.getInstance(applicationContext).setBoolean(IS_INIT, true)
+                                finish()
+                                overridePendingTransition(0, 0)
+                                startActivity(Intent(self, MainActivity::class.java))
+                            })
+                            setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ -> dialog.dismiss() })
+                            show()
+                        }
+                        true -> getDialog(self, R.string.main_update_impossible).apply {
+                            setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ -> dialog.dismiss() })
+                            show()
+                        }
+                    }
                 }
-                */
                 return true
             }
         }
@@ -143,17 +150,17 @@ class MainActivity : BaseActivity() {
                             PreferenceUtil.getInstance(applicationContext).setInt(TOTAL_COUNT, information.totalCount)
 
                             when (currentVersion >= information.minVersion.toVersion()) {
-                                false -> getDialog(self, getString(R.string.main_version_error)).apply {
-                                    setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
-                                        dialog.dismiss()
-                                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)))
-                                        finish()
-                                    })
-                                    setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ ->
-                                        dialog.dismiss()
-                                    })
-                                    setCancelable(false)
-                                    show()
+                                false -> {
+                                    awaitProgressBar.visibility = View.GONE
+                                    getDialog(self, R.string.main_version_error).apply {
+                                        setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
+                                            dialog.dismiss()
+                                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)))
+                                            finish()
+                                        })
+                                        setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ -> dialog.dismiss() })
+                                        show()
+                                    }
                                 }
                                 true -> when (currentVersion >= information.warningVersion.toVersion()) {
                                     false -> getDialog(self, getString(R.string.main_version_warning, information.newVersion)).apply {
@@ -169,22 +176,18 @@ class MainActivity : BaseActivity() {
                                         setCancelable(false)
                                         show()
                                     }
-                                    true -> when (currentVersion > information.newVersion.toVersion()) {
-                                        false -> loadData()
-                                        true -> finish()
-                                    }
+                                    true -> loadData()
                                 }
                             }
                         }, {
                             Log.e(NETWORK_ERROR, it.toString())
-                            getDialog(self, getString(R.string.main_version_error)).apply {
+                            getDialog(self, R.string.main_version_error).apply {
                                 setPositiveButton(getString(R.string.common_alert_positive), { dialog, _ ->
                                     dialog.dismiss()
                                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)))
                                     finish()
                                 })
                                 setNegativeButton(getString(R.string.common_alert_negative), { dialog, _ -> dialog.dismiss() })
-                                setCancelable(false)
                                 show()
                             }
                         })
@@ -230,10 +233,17 @@ class MainActivity : BaseActivity() {
                             Observable.fromIterable(it)
                                     .flatMap { RestUtil.getInfo(it.watch) }
                         }
+                        /*
+                        .flatMap {
+                            Observable.fromIterable(it)
+                                    .flatMap { RestUtil.getInfo(it.watch) }
+                        }
+                        */
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete {
                             PreferenceUtil.getInstance(applicationContext).setBoolean(IS_INIT, false)
+                            PreferenceUtil.getInstance(applicationContext).setInt(IS_SORTED, SORTED_NEWEST_UPLOAD)
                             loadTabLayout()
                         }
                         .observeOn(Schedulers.io())
@@ -290,11 +300,6 @@ class MainActivity : BaseActivity() {
                 .filter { it.getChildAt(1) is TextView }
                 .map { it.getChildAt(1) as TextView }
                 .forEach { it.setFont(self) }
-
-        Realm.getDefaultInstance().executeTransaction {
-            val currentCount = it.where(Data::class.java).count().toInt()
-            ToastUtil.getInstance(applicationContext).text("currentCount: ${currentCount}")
-        }
     }
 
     private fun getDataSet(): List<ListFragment> =

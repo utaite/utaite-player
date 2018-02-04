@@ -18,13 +18,16 @@
     <string name="utaite_hiina">히이나</string>
     <string name="utaite_kurokumo">쿠로쿠모</string>
 
-    <string name="list_sorted_alert_title">노래 정렬방식</string>
-    <string name="list_sorted_newest_upload">최근 업로드순</string>
-    <string name="list_sorted_most_view">조회순</string>
-    <string name="list_sorted_title">제목순</string>
+    <string name="main_sort_alert_title">노래 정렬방식</string>
+    <string name="main_sort_latest_upload">최근 업로드순</string>
+    <string name="main_sort_most_view">조회순</string>
+    <string name="main_sort_title">제목순</string>
 
     <string name="main_version_error">현재 버전에서는 실행이 불가능합니다. 최신 버전으로 업데이트 하시겠습니까?</string>
     <string name="main_version_warning">새로운 버전(%1$s)이 있습니다. 최신 버전으로 업데이트 하시겠습니까?</string>
+
+    <string name="main_update_possible">새로 업로드된 노래가 %1$d곡 있습니다. 최신 버전으로 동기화 하시겠습니까?</string>
+    <string name="main_update_impossible">새로 업로드된 노래가 아직 없습니다.</string>
 
     <string name="detail_lyrics_load_failed">가사를 불러올 수 없습니다.</string>
 

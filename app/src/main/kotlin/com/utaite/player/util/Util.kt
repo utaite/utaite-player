@@ -26,6 +26,9 @@ fun networkCheck(context: Context): Boolean =
 fun getView(context: Context, resId: Int): View =
         LayoutInflater.from(context).inflate(resId, null)
 
+fun getDialog(activity: BaseActivity, resId: Int): AlertDialog.Builder =
+        getDialog(activity, activity.getString(resId))
+
 fun getDialog(activity: BaseActivity, message: String): AlertDialog.Builder =
         AlertDialog.Builder(activity).apply {
             setTitle(activity.getString(R.string.common_alert_title))
